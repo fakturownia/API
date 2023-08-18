@@ -747,19 +747,13 @@ Za pomocą parametru `fiskator_name` możemy przekazać nazwę drukarki, na któ
 
 ## Faktura korekta
 
-1. Pobranie faktury korekty wraz z dwoma dodatkowymi polami "Treść korygowana" i "Treść poprawiona":
+1. Pobranie faktury korekty wraz z pozycjami i ich atrybutami przed i po korekcie:
 
     ```shell
-    curl -X GET 'https://twojaDomena.fakturownia.pl/invoices/INVOICE_ID.json?api_token=API_TOKEN&additional_fields[invoice]=corrected_content_before,corrected_content_after'
+    curl 'https://YOUR_DOMAIN.fakturownia.pl/invoices/INVOICE_ID.json?api_token=API_TOKEN&include=positions,positions.correction_before,positions.correction_after'
     ```
 
-2. Pobranie faktury korekty wraz z pozycjami i ich atrybutami przed i po korekcie:
-
-    ```shell
-    curl -X GET 'https://twojaDomena.fakturownia.test/invoices/INVOICE_ID.json?api_token=API_TOKEN&include=positions,positions.correction_before,positions.correction_after'
-    ```
-
-3. Dodanie nowej faktury korygującej
+2. Dodanie nowej faktury korygującej
     ```shell
     curl https://YOUR_DOMAIN.fakturownia.pl/invoices.json \
     -H 'Accept: application/json' \
@@ -785,7 +779,7 @@ Za pomocą parametru `fiskator_name` możemy przekazać nazwę drukarki, na któ
                     "kind":"correction_before"
                 },
                 "correction_after_attributes": {
-                    "name":"Product A1",
+                    "name":"Product A2",
                     "quantity":"1",
                     "total_price_gross":"10",
                     "tax":"23",
