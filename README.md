@@ -111,6 +111,7 @@ Działające przykłady wywołania API Fakturowni znajdują się też w w syste
     + [Usuwanie konta](#a3)
     + [Odłączanie konta](#a4)
 + [Przykłady w PHP i Ruby](#codes)
++ [Webhooki](#webhooks)
 
 
 <a name="token"/>
@@ -934,6 +935,8 @@ Pola faktury
 "seller_www" : "",
 "seller_fax" : "",
 "seller_phone" : "",
+"use_invoice_issuer": "1",
+"invoice_issuer": "Dane Wystawcy",
 "client_id" : "-1" - id kupującego (jeśi -1 to klient zostanie utworzony w systemie)
 "buyer_name" : "Nazwa klienta" - nabywca
 "buyer_tax_no" : "525-244-57-67", - numer identyfikacji podatkowej nabywcy (domyślnie NIP)
@@ -1002,6 +1005,7 @@ Pola faktury
    		"price_gross" : "72,57", - jeśli nie jest podana to zostanie wyliczona
    		"total_price_net" : "59,00", - jeśli nie jest podana to zostanie wyliczona
    		"total_price_gross" : "72,57",
+		"description" : opis pozycji faktury
    		"code" : "" - kod produktu,
                 "gtu_code" : "" - kod GTU produktu,
 		"lump_sum_tax" : "17", - stawka ryczałtu (możliwa do ustawienia jedynie, gdy wystawiamy fakturę dla działu lub firmy z włączoną opcją "Płatnik zryczałtowanego podatku dochodowego")
@@ -2307,3 +2311,19 @@ SUB_DOMAIN_3 nie było podpięte
 <https://github.com/radgost/fakturownia-api/blob/master/example1.rb/>
 
 Ruby Gem do integracji z Fakturownia.pl: <https://github.com/kkempin/fakturownia/>
+
+<a name="webhooks"/>
+
+## Webhooki
+
+* `GET /webhooks.json` - pobranie listy webhooków
+* `GET /webhooks/1.json` - pobranie webhooka
+* `POST /webhooks.json` - dodanie nowego webhooka
+* `PUT /webhooks/1.json` - aktualizacja webhooka
+* `DELETE /webhooks/1.json` - skasowanie webhooka
+
+Przykład:
+
+```shell
+curl "https://YOUR_DOMAIN.fakturownia.pl/webhooks.json?api_token=API_TOKEN"
+```
