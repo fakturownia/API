@@ -936,6 +936,7 @@ Pola faktury
 "seller_www" : "",
 "seller_fax" : "",
 "seller_phone" : "",
+"seller_bdo_no": "1234567899", - numer BDO
 "use_invoice_issuer": "1",
 "invoice_issuer": "Dane Wystawcy",
 "client_id" : "-1" - id kupującego (jeśi -1 to klient zostanie utworzony w systemie)
