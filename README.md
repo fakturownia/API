@@ -848,6 +848,14 @@ curl https://YOUR_DOMAIN.fakturownia.pl/invoices.json \
 
 Jeśli w żądaniu przesyłamy `client_id`, a w karcie tego klienta mamy określony domyślny cennik, wówczas wystarczy przesłać samo `"use_prices_from_price_lists": true` bez konieczności podawania dodatkowo `price_list_id`.
 
+<a name="f23"/>
+
+## Pobranie faktury razem z połączonymi płatnościami
+
+```shell
+curl https://twojaDomena.fakturownia.pl/invoices/INVOICE_ID.json?api_token=API_TOKEN&additional_fields[invoice]=connected_payments
+```
+
 <a name="view_url"/>
 
 ## Link do podglądu faktury i pobieranie do PDF
