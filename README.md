@@ -278,7 +278,7 @@ curl https://YOUR_DOMAIN.fakturownia.pl/invoices.json \
         }
     }'
 ```
-<b>Klient: nowy lub istniejący </b></br>
+<b>Klient: nowy lub istniejący </b><br>
 Podczas dodawania nowego dokumentu system automatycznie stara się dopasować przesłane dane nabywcy z istniejącym na koncie klientem. W dopasowaniu biorą udział następujące pola: "buyer_name", "buyer_tax_no", "buyer_email" (i/lub dla klienta prywatnego "buyer_first_name" i "buyer_last_name"). Jeśli nie uda się dopasować żadnego istniejącego klienta, system utworzy nowego. Gdy dodajemy dokument dla klienta, którego mamy już w bazie, zamiast pól zaczynających się od słowa "buyer" zaleca się używanie samego identyfikatora klienta - "client_id".
 Wówczas na wystawianym dokumencie dane nabywcy będą identyczne jak dane w karcie wskazanego klienta.
 Możesz zaktualizować niektóre dane na karcie klienta (np.: adres), dodając parametr `"buyer_override": true`. Przykład:
@@ -2114,19 +2114,19 @@ UWAGA: api_token jest zwracany tylko jeśli dany użytkownik ma wygenerowany API
 
 ## Dodawanie użytkowników
 
-Po utworzeniu konta API i określeniu właściciela (patrz wyżej), możesz dodać innych użytkowników do konta poprzez API i zdefiniować ich rolę.
-</br>Aby dodać użytkownika do konta, musisz wysłać: :</br>
-   - kod API Twojego konta (```api_token```)<br></a>
-   - Twój kod do umieszczenia na stronie (```integration_token```). Aby go otrzymać skontaktuj się z nami poprzez wiadomość e-mail info@fakturownia.pl.</br>
-   - określenia parametru ```invite``` :<br></a>
+Po utworzeniu konta API i określeniu właściciela (patrz wyżej), możesz dodać innych użytkowników do konta poprzez API i zdefiniować ich rolę.<br>
+Aby dodać użytkownika do konta, musisz wysłać:
+   - kod API Twojego konta (```api_token```)
+   - Twój kod do umieszczenia na stronie (```integration_token```). Aby go otrzymać skontaktuj się z nami poprzez wiadomość e-mail info@fakturownia.pl.
+   - określenia parametru ```invite``` :
 	  - jeśli użytkownik musi zostać stworzony ("false"): oprócz przesłania adresu e-mail należy także wybrać hasło
-	  - jeśli użytkownik już istnieje i jest powiązany z kontem w Fakturowni ("true"): wymagany jest tylko jego adres e-mail <br></a>
-   - rola użytkownika (```role```) :<br></a>
+	  - jeśli użytkownik już istnieje i jest powiązany z kontem w Fakturowni ("true"): wymagany jest tylko jego adres e-mail
+   - rola użytkownika (```role```) 
 	  - dla jednej z domyślnych ról wybierz wartość: "member" dla zwykłego użytkownika, "admin" dla administratora lub "accountant" dla księgowego.
-	  - w przypadku niestandardowej roli wpisz wartość "role_1234" lub 1234, która reprezentuje niestandardowy identyfikator roli konta.<br></a>
-   - identyfikatory działu (```department_ids```), do których ma dostęp użytkownik nie będący administratorem.<br
+	  - w przypadku niestandardowej roli wpisz wartość "role_1234" lub 1234, która reprezentuje niestandardowy identyfikator roli konta.
+   - identyfikatory działu (```department_ids```), do których ma dostęp użytkownik nie będący administratorem.
 
-Aby dowiedzieć się więcej o rolach użytkowników zapraszamy do bazy wiedzy: https://pomoc.fakturownia.pl/28889135-Wlasne-role-uprawnienia-uzytkownika-w-Fakturowni.<br></a>  
+Aby dowiedzieć się więcej o rolach użytkowników zapraszamy do bazy wiedzy: https://pomoc.fakturownia.pl/28889135-Wlasne-role-uprawnienia-uzytkownika-w-Fakturowni.<br>
 
 ```shell
 POST https://YOUR_DOMAIN.fakturownia.pl/account/add_user.json
