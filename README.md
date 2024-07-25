@@ -40,6 +40,7 @@ Działające przykłady wywołania API Fakturowni znajdują się też w w syste
 	+ [Faktura korekta](#f20)
     + [Dodanie domyślnych uwag z ustawień konta](#f21)
     + [Zaczytanie cen produktów z cennika podczas wystawiania faktury](#f22)
+    + [Pobranie faktury razem z połączonymi płatnościami](#f23)
 + [Link do podglądu faktury i pobieranie do PDF](#view_url)
 + [Przykłady użycia  - zakup szkolenia](#use_case1)
 + [Faktury - specyfikacja, rodzaje pól, kody GTU](#invoices)
