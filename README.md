@@ -267,10 +267,10 @@ curl https://YOUR_DOMAIN.fakturownia.pl/invoices.json \
             "issue_date": "2013-01-16",
             "payment_to": "2013-01-23",
             "seller_name": "Wystawca Sp. z o.o.",
-            "seller_tax_no": "5252445767",
+            "seller_tax_no": "6272616681",
             "buyer_name": "Klient1 Sp. z o.o.",
             "buyer_email": "buyer@testemail.pl",
-            "buyer_tax_no": "5252445767",
+            "buyer_tax_no": "6272616681",
             "positions":[
                 {"name":"Produkt A1", "tax":23, "total_price_gross":10.23, "quantity":1},
                 {"name":"Produkt A2", "tax":0, "total_price_gross":50, "quantity":3}
@@ -295,7 +295,7 @@ curl https://YOUR_DOMAIN.fakturownia.pl/invoices.json \
             "issue_date": "2013-01-16",
             "payment_to": "2013-01-23",
             "seller_name": "Wystawca Sp. z o.o.",
-            "seller_tax_no": "5252445767",
+            "seller_tax_no": "6272616681",
             "client_id": 1,
                 "buyer_post_code": "06000",
                 "buyer_city": "Nice",
@@ -673,7 +673,7 @@ curl https://YOUR_DOMAIN.fakturownia.pl/invoices.json \
             "additional_params":"for_receipt",
             "exclude_from_stock_level": true,
             "buyer_name": "Klient1 Sp. z o.o.",
-            "buyer_tax_no": "5252445767",
+            "buyer_tax_no": "6272616681",
             "positions": [
                 {"name":"Produkt A1","quantity":"1","tax":"23","total_price_gross":"10,23"}
             ]
@@ -811,7 +811,7 @@ curl https://YOUR_DOMAIN.fakturownia.pl/invoices.json \
             "invoice": {
                 "kind":"vat",
                 "seller_name": "Wystawca Sp. z o.o.",
-                "seller_tax_no": "5252445767",
+                "seller_tax_no": "6272616681",
                 "buyer_name": "Klient1 Sp. z o.o.",
                 "positions":[
                     {"name":"towar", "quantity":1, "total_price_gross": 123}
@@ -846,6 +846,14 @@ curl https://YOUR_DOMAIN.fakturownia.pl/invoices.json \
 ```
 
 Jeśli w żądaniu przesyłamy `client_id`, a w karcie tego klienta mamy określony domyślny cennik, wówczas wystarczy przesłać samo `"use_prices_from_price_lists": true` bez konieczności podawania dodatkowo `price_list_id`.
+
+<a name="f23"></a>
+
+## Pobranie faktury razem z połączonymi płatnościami
+
+```shell
+curl https://twojaDomena.fakturownia.pl/invoices/INVOICE_ID.json?api_token=API_TOKEN&additional_fields[invoice]=connected_payments
+```
 
 <a name="view_url"></a>
 
@@ -935,6 +943,7 @@ Pola faktury
 "seller_www" : "",
 "seller_fax" : "",
 "seller_phone" : "",
+"seller_bdo_no": "1234567899", - numer BDO
 "use_invoice_issuer": "1",
 "invoice_issuer": "Dane Wystawcy",
 "client_id" : "-1" - id kupującego (jeśi -1 to klient zostanie utworzony w systemie)
@@ -1026,6 +1035,7 @@ Pola faktury
 "reverse_charge": false, Odwrotne obciążenie. Oznaczenie faktury jako 'Odwrotne obciążenie' spowoduje wymuszenie na pozycjach (positions) odpowiedniej stawki podatku (tax) w zależności od kraju nabywcy (buyer_country): 'oo' dla 'PL' lub 'np' w pozostałych przypadkach
 "corrected_content_before": "", Treść korygowana (pole ma zastosowanie dla faktur korygujących)
 "corrected_content_after": "", Treść prawidłowa (pole ma zastosowanie dla faktur korygujących)
+"accounting_note_kind": "credit" lub "debit", w zależności, czy Nota księgowa jest obciążąjąca czy uznaniowa (pole ma zastosowanie tylko dla not księgowych)
 ```
 
 Wartości pól
@@ -1209,10 +1219,10 @@ curl https://YOUR_DOMAIN.fakturownia.pl/invoices.json \
             "issue_date": "2013-01-16",
             "payment_to": "2013-01-23",
             "seller_name": "Wystawca Sp. z o.o.",
-            "seller_tax_no": "5252445767",
+            "seller_tax_no": "6272616681",
             "buyer_name": "Klient1 Sp. z o.o.",
             "buyer_email": "buyer@testemail.pl",
-            "buyer_tax_no": "5252445767",
+            "buyer_tax_no": "6272616681",
             "gtu_codes": ["GTU_03", "GTU_04"],
             "positions":[
                 {"product_id": 1, "quantity":2},
@@ -1289,7 +1299,7 @@ curl https://YOUR_DOMAIN.fakturownia.pl/clients.json \
     -d '{"api_token": "API_TOKEN",
         "client": {
             "name": "Klient1",
-            "tax_no": "5252445767",
+            "tax_no": "6272616681",
             "bank" : "bank1",
             "bank_account" : "bank_account1",
             "city" : "city1",
@@ -1388,7 +1398,7 @@ curl https://YOUR_DOMAIN.fakturownia.pl/clients/111.json \
     -d '{"api_token": "API_TOKEN",
         "client": {
             "name": "Klient2",
-            "tax_no": "52524457672",
+            "tax_no": "62726166812",
             "bank" : "bank2",
             "bank_account" : "bank_account2",
             "city" : "city2",
