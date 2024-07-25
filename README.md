@@ -114,13 +114,13 @@ Działające przykłady wywołania API Fakturowni znajdują się też w w syste
 + [Webhooki](#webhooks)
 
 
-<a name="token"/>
+<a name="token"></a>
 
 ## API token
 
 `API_TOKEN` token trzeba pobrać z ustawień aplikacji ("Ustawienia -> Ustawienia konta -> Integracja -> Kod autoryzacyjny API")
 
-<a name="list_params"/>
+<a name="list_params"></a>
 
 ## Dodatkowe parametry dostępne przy pobieraniu listy rekordów
 Do wywołań można przekazywać dodatkowe parametry - te same które są używane w aplikacji, np. `page=`, `period=` itp.
@@ -184,32 +184,31 @@ Parametr `order=` pozwala wybrać wartość, według której będzie ustalona ko
 
 Można dodać do parametru `.desc` aby zmienić kolejność sortowania na malejącą np. `updated_at.desc`.
 
-<a name="examples"/>
-
+<a name="examples"></a>
 ## Przykłady wywołania
 
-<a name="f1"/>
+<a name="f1"></a>
 Pobranie listy faktur z aktualnego miesiąca
 
 ```shell
 curl https://twojaDomena.fakturownia.pl/invoices.json?period=this_month&api_token=API_TOKEN&page=1
 ```
 
-<a name="f2"/>
+<a name="f2"></a>
 Pobranie listy faktur wraz z ich pozycjami
 
 ```shell
 curl https://twojaDomena.fakturownia.pl/invoices.json?include_positions=true&api_token=API_TOKEN&page=1
 ```
 
-<a name="f3"/>
+<a name="f3"></a>
 Faktury danego klienta
 
 ```shell
 curl https://twojaDomena.fakturownia.pl/invoices.json?client_id=ID_KLIENTA&api_token=API_TOKEN
 ```
 
-<a name="f4"/>
+<a name="f4"></a>
 Pobranie faktury po ID
 
 
@@ -217,7 +216,7 @@ Pobranie faktury po ID
 curl https://twojaDomena.fakturownia.pl/invoices/100.json?api_token=API_TOKEN
 ```
 
-<a name="f5"/>
+<a name="f5"></a>
 Pobranie PDF-a
 
 
@@ -225,7 +224,7 @@ Pobranie PDF-a
 curl https://twojaDomena.fakturownia.pl/invoices/100.pdf?api_token=API_TOKEN
 ```
 
-<a name="f6"/>
+<a name="f6"></a>
 Wysłanie faktury e-mailem do klienta (na e-mail klienta podany przy tworzeniu faktury, pole "buyer_email")
 
 
@@ -252,7 +251,7 @@ inne opcje PDF:
 * print_option=duplicate Duplikat
 
 
-<a name="f7"/>
+<a name="f7"></a>
 Dodanie nowej faktury
 
 ```shell
@@ -279,7 +278,7 @@ curl https://YOUR_DOMAIN.fakturownia.pl/invoices.json \
         }
     }'
 ```
-<b>Klient: nowy lub istniejący </b></br>
+<b>Klient: nowy lub istniejący </b><br>
 Podczas dodawania nowego dokumentu system automatycznie stara się dopasować przesłane dane nabywcy z istniejącym na koncie klientem. W dopasowaniu biorą udział następujące pola: "buyer_name", "buyer_tax_no", "buyer_email" (i/lub dla klienta prywatnego "buyer_first_name" i "buyer_last_name"). Jeśli nie uda się dopasować żadnego istniejącego klienta, system utworzy nowego. Gdy dodajemy dokument dla klienta, którego mamy już w bazie, zamiast pól zaczynających się od słowa "buyer" zaleca się używanie samego identyfikatora klienta - "client_id".
 Wówczas na wystawianym dokumencie dane nabywcy będą identyczne jak dane w karcie wskazanego klienta.
 Możesz zaktualizować niektóre dane na karcie klienta (np.: adres), dodając parametr `"buyer_override": true`. Przykład:
@@ -311,7 +310,7 @@ curl https://YOUR_DOMAIN.fakturownia.pl/invoices.json \
 ```
 
 
-<a name="f8"/>
+<a name="f8"></a>
 Dodanie nowej faktury - minimalna wersja (tylko pola wymagane), gdy mamy Id produktu (product_id), nabywcy (client_id) i sprzedawcy (department_id) wtedy nie musimy podawać pełnych danych. Opcjonalnie można podać również id odbiorcy (recipient_id).
 Zostanie wystawiona Faktura VAT z aktualnym dniem i z 5 dniowym terminem płatności.
 
@@ -329,7 +328,7 @@ curl https://YOUR_DOMAIN.fakturownia.pl/invoices.json \
         }}'
 ```
 
-<a name="f8b"/>
+<a name="f8b"></a>
 Dodanie nowej faktury – dokumentu podobnego do faktury o podanym ID (copy_invoice_from).
 
 Dodanie identycznej faktury o podanym rodzaju
@@ -414,7 +413,7 @@ curl https://YOUR_DOMAIN.fakturownia.pl/invoices.json \
     }'
 ```
 
-<a name="f8c"/>
+<a name="f8c"></a>
 Dodanie faktury OSS
 
 Jeśli w ustawieniach konta zaznaczyłeś opcję "Faktury OSS", możesz utworzyć fakturę oznaczoną jako sprzedaż OSS poprzez dopisanie parametru "use_oss":
@@ -463,7 +462,7 @@ curl https://YOUR_DOMAIN.fakturownia.pl/invoices.json \
     }'
 ```
 
-<a name="f9"/>
+<a name="f9"></a>
 Dodanie nowej faktury korygującej
 
 ```shell
@@ -501,7 +500,7 @@ curl https://YOUR_DOMAIN.fakturownia.pl/invoices.json \
         }}'
 ```
 
-<a name="f10"/>
+<a name="f10"></a>
 Aktualizacja faktury
 
 ```shell
@@ -517,7 +516,7 @@ curl https://YOUR_DOMAIN.fakturownia.pl/invoices/111.json \
     }'
 ```
 
-<a name="f10b"/>
+<a name="f10b"></a>
 Aktualizacja pozycji na fakturze - aby edytować pozycję na fakturze, należy podać id pozycji.
 
 ```shell
@@ -533,7 +532,7 @@ curl https://YOUR_DOMAIN.fakturownia.pl/invoices/111.json \
     }'
 ```
 
-<a name="f10c"/>
+<a name="f10c"></a>
 Usunięcie pozycji na fakturze - aby usunąć pozycję na fakturze, należy podać id pozycji wraz z parametrem _destroy=1.
 
 ```shell
@@ -549,7 +548,7 @@ curl https://YOUR_DOMAIN.fakturownia.pl/invoices/111.json \
     }'
 ```
 
-<a name="f10d"/>
+<a name="f10d"></a>
 Dodanie pozycji na fakturze. Pozycja zostanie dopisana jako ostatnia.
 
 ```shell
@@ -565,21 +564,21 @@ curl https://YOUR_DOMAIN.fakturownia.pl/invoices/111.json \
     }'
 ```
 
-<a name="f11"/>
+<a name="f11"></a>
 Zmiana statusu faktury
 
 ```shell
 curl "https://YOUR_DOMAIN.fakturownia.pl/invoices/111/change_status.json?api_token=API_TOKEN&status=STATUS" -X POST
 ```
 
-<a name="f12"/>
+<a name="f12"></a>
 Pobranie listy definicji faktur cyklicznych
 
 ```shell
 curl https://YOUR_DOMAIN.fakturownia.pl/recurrings.json?api_token=API_TOKEN
 ```
 
-<a name="f13"/>
+<a name="f13"></a>
 Dodanie definicji faktury cyklicznej
 
 ```shell
@@ -599,7 +598,7 @@ curl https://YOUR_DOMAIN.fakturownia.pl/recurrings.json \
         }}'
 ```
 
-<a name="f14"/>
+<a name="f14"></a>
 Aktualizacja definicji faktury cyklicznej (zmiana daty wystawienia następnej faktury)
 
 ```shell
@@ -615,14 +614,14 @@ curl https://YOUR_DOMAIN.fakturownia.pl/recurrings/111.json \
     }'
 ```
 
-<a name="f15"/>
+<a name="f15"></a>
 Usunięcie faktury
 
 ```shell
 curl -X DELETE "https://YOUR_DOMAIN.fakturownia.pl/invoices/INVOICE_ID.json?api_token=API_TOKEN"
 ```
 
-<a name="f16"/>
+<a name="f16"></a>
 Anulowanie faktury
 
 ```shell
@@ -641,7 +640,7 @@ Aby wyświetlić powód anulowania wskazany w anulowanym dokumencie, dołącz pa
 
 https://YOUR_DOMAIN.fakturownia.pl/invoices/ID_FAKTURY.json?api_token=API_TOKEN&additional_fields[invoice]=cancel_reason
 
-<a name="f17"/>
+<a name="f17"></a>
 Połączenie istniejącej faktury i paragonu
 
 ```shell
@@ -659,7 +658,7 @@ curl https://YOUR_DOMAIN.fakturownia.pl/invoices/ID_FAKTURY.json \
     }'
 ```
 
-<a name="f17b"/>
+<a name="f17b"></a>
 Dodawanie faktury do istniejącego paragonu
 
 ```shell
@@ -684,14 +683,14 @@ curl https://YOUR_DOMAIN.fakturownia.pl/invoices.json \
 
 Dane `buyer_name`, `buyer_tax_no`, `positions` wypełniamy danymi z paragonu.
 
-<a name="f18"/>
+<a name="f18"></a>
 Pobranie wszystkich załączników faktury w archiwum ZIP
 
 ```shell
 curl -o attachments.zip https://YOUR_DOMAIN.fakturownia.pl/invoices/INVOICE_ID/attachments_zip.json?api_token=API_TOKEN
 ```
 
-<a name="f18b"/>
+<a name="f18b"></a>
 Dodanie nowego załącznika do faktury
 
 1. Pobranie danych niezbędnych do przesłania pliku:
@@ -731,7 +730,7 @@ Dodanie nowego załącznika do faktury
         }'
     ```
 
-<a name="f19"/>
+<a name="f19"></a>
 
 ## Wydruk fiskalny
 
@@ -743,7 +742,7 @@ Za pomocą parametru `invoice_ids[]` przekazujemy id faktur do wydrukowania.
 
 Za pomocą parametru `fiskator_name` możemy przekazać nazwę drukarki, na której uruchomi się wydruk (przydatne jeśli mamy połączoną więcej niż jedną drukarkę).
 
-<a name="f20"/>
+<a name="f20"></a>
 
 ## Faktura korekta
 
@@ -795,7 +794,7 @@ Pobranie faktury korekty wraz z informacją "przed / po korekcie" w pozycjach:
 curl https://twojaDomena.fakturownia.pl/invoices/INVOICE_ID.json?api_token=API_TOKEN&correction_positions=full
 ```
 
-<a name="f21"/>
+<a name="f21"></a>
 
 ## Dodanie domyślnych uwag z ustawień konta
 
@@ -821,7 +820,7 @@ curl https://YOUR_DOMAIN.fakturownia.pl/invoices.json \
 	 }'
 ```
 
-<a name="f22"/>
+<a name="f22"></a>
 
 ## Zaczytanie cen produktów z cennika podczas wystawiania faktury
 
@@ -848,7 +847,7 @@ curl https://YOUR_DOMAIN.fakturownia.pl/invoices.json \
 
 Jeśli w żądaniu przesyłamy `client_id`, a w karcie tego klienta mamy określony domyślny cennik, wówczas wystarczy przesłać samo `"use_prices_from_price_lists": true` bez konieczności podawania dodatkowo `price_list_id`.
 
-<a name="f23"/>
+<a name="f23"></a>
 
 ## Pobranie faktury razem z połączonymi płatnościami
 
@@ -856,7 +855,7 @@ Jeśli w żądaniu przesyłamy `client_id`, a w karcie tego klienta mamy określ
 curl https://twojaDomena.fakturownia.pl/invoices/INVOICE_ID.json?api_token=API_TOKEN&additional_fields[invoice]=connected_payments
 ```
 
-<a name="view_url"/>
+<a name="view_url"></a>
 
 ## Link do podglądu faktury i pobieranie do PDF
 
@@ -876,7 +875,7 @@ pdf: `https://twojaDomena.fakturownia.pl/invoice/{{token}}.pdf`, `https://twojaD
 
 Np dla tokenu równego: `HBO3Npx2OzSW79RQL7XV2` publiczny PDF będzie pod adresem `https://twojaDomena.fakturownia.pl/invoice/HBO3Npx2OzSW79RQL7XV2.pdf`
 
-<a name="use_case1"/>
+<a name="use_case1"></a>
 
 ## Przykłady użycia w PHP - zakup szkolenia
 
@@ -892,7 +891,7 @@ Przykład flow Portalu, który generuje dla klienta fakturę Proformę, wysyła 
 * Po otrzymaniu informacji o płatności (przez API) Portal wysyła Klientowi bilet na Szkolenie
 
 
-<a name="invoices"/>
+<a name="invoices"></a>
 
 ## Faktury
 
@@ -1255,18 +1254,18 @@ Dla usług:
 "GTU_13" - Świadczenie usług transportowych i gospodarki magazynowej - Sekcja H PKWiU 2015 symbol ex 49.4, ex 52.1
 ```
 
-<a name="clients"/>
+<a name="clients"></a>
 
 ## Klienci
 
-<a name="k1"/>
+<a name="k1"></a>
 Lista klientów
 
 ```shell
 curl "https://YOUR_DOMAIN.fakturownia.pl/clients.json?api_token=API_TOKEN&page=1"
 ```
 
-<a name="k1b"/>
+<a name="k1b"></a>
 Wyszukiwanie klientów po nazwie, mailu, nazwie skróconej lub numerze NIP
 
 ```shell
@@ -1276,21 +1275,21 @@ curl "https://YOUR_DOMAIN.fakturownia.pl/clients.json?api_token=API_TOKEN&shortc
 curl "https://YOUR_DOMAIN.fakturownia.pl/clients.json?api_token=API_TOKEN&tax_no=TAX_NO"
 ```
 
-<a name="k2"/>
+<a name="k2"></a>
 Pobranie wybranego klienta po ID
 
 ```shell
 curl "https://YOUR_DOMAIN.fakturownia.pl/clients/100.json?api_token=API_TOKEN"
 ```
 
-<a name="k2b"/>
+<a name="k2b"></a>
 Pobranie wybranego klienta po zewnętrznym ID
 
 ```shell
 curl "https://YOUR_DOMAIN.fakturownia.pl/clients.json?external_id=100&api_token=API_TOKEN"
 ```
 
-<a name="k3"/>
+<a name="k3"></a>
 Dodanie klienta
 
 ```shell
@@ -1388,7 +1387,7 @@ Pola klienta
     "tp_client_connection": "1" lub "0"  - powiązania pomiędzy podmiotami (automatyczne dodanie kodu TP do dokumentu) (domyślnie "0")
 ```
 
-<a name="k4"/>
+<a name="k4"></a>
 Aktualizacja klienta
 
 ```shell
@@ -1411,46 +1410,46 @@ curl https://YOUR_DOMAIN.fakturownia.pl/clients/111.json \
             "street" : "street2"
         }}'
 ```
-<a name="k5"/>
+<a name="k5"></a>
 Usunięcie klienta
 
 ```shell
 curl -X DELETE "https://YOUR_DOMAIN.fakturownia.pl/clients/CLIENT_ID.json?api_token=API_TOKEN"
 ```
 
-<a name="products"/>
+<a name="products"></a>
 
 ## Produkty
 
-<a name="p1"/>
+<a name="p1"></a>
 Lista produktów
 
 ```shell
 curl "https://YOUR_DOMAIN.fakturownia.pl/products.json?api_token=API_TOKEN&page=1"
 ```
 
-<a name="p2"/>
+<a name="p2"></a>
 Lista produktów ze stanem magazynowym podanego magazynu
 
 ```shell
 curl "https://YOUR_DOMAIN.fakturownia.pl/products.json?api_token=API_TOKEN&warehouse_id=WAREHOUSE_ID&page=1"
 ```
 
-<a name="p3"/>
+<a name="p3"></a>
 Pobranie wybranego produktu po ID
 
 ```shell
 curl "https://YOUR_DOMAIN.fakturownia.pl/products/100.json?api_token=API_TOKEN"
 ```
 
-<a name="p4"/>
+<a name="p4"></a>
 Pobranie wybranego produktu po ID ze stanem magazynowym podanego magazynu
 
 ```shell
 curl "https://YOUR_DOMAIN.fakturownia.pl/products/100.json?api_token=API_TOKEN&warehouse_id=WAREHOUSE_ID"
 ```
 
-<a name="p5"/>
+<a name="p5"></a>
 Dodanie produktu
 
 ```shell
@@ -1466,7 +1465,7 @@ curl https://YOUR_DOMAIN.fakturownia.pl/products.json \
         }}'
 ```
 
-<a name="p5b"/>
+<a name="p5b"></a>
 Dodanie produktu, który jest zestawem
 
 ```shell
@@ -1538,7 +1537,7 @@ Pola produktu
     "weight_unit": "kg" lub "g" - jednostka wagi
 ```
 
-<a name="p6"/>
+<a name="p6"></a>
 Aktualizacja produktu
 
 ```shell
@@ -1557,13 +1556,13 @@ curl https://YOUR_DOMAIN.fakturownia.pl/products/333.json \
 **Uwaga:** Cenna netto jest wyliczana na podstawie wartości ceny brutto oraz podatku, nie można jej edytować wprost przez API.
 
 
-<a name="price_lists"/>
+<a name="price_lists"></a>
 
 ## Cenniki
 
-<a name="warehouse_documents"/>
+<a name="warehouse_documents"></a>
 
-<a name="pricel1"/>
+<a name="pricel1"></a>
 Lista cenników
 
 ```shell
@@ -1571,7 +1570,7 @@ curl "https://YOUR_DOMAIN.fakturownia.pl/price_lists.json?api_token=API_TOKEN"
 ```
 można przekazywać takie same parametry jakie są przekazywane w aplikacji (na stronie listy faktur)
 
-<a name="pricel2"/>
+<a name="pricel2"></a>
 Dodanie cennika
 
 ```shell
@@ -1600,7 +1599,7 @@ curl https://YOUR_DOMAIN.fakturownia.pl/price_lists.json
                 }}'
 ```
 
-<a name="pricel3"/>
+<a name="pricel3"></a>
 Aktualizacja cennika
 
 ```shell
@@ -1627,7 +1626,7 @@ curl https://YOUR_DOMAIN.fakturownia.pl/price_lists/100.json
                 }}'
 ```
 
-<a name="pricel4"/>
+<a name="pricel4"></a>
 Usunięcie cennika
 
 ```shell
@@ -1636,7 +1635,7 @@ curl -X DELETE "https://YOUR_DOMAIN.fakturownia.pl/price_lists/100.json?api_toke
 
 ## Dokumenty magazynowe
 
-<a name="wd1"/>
+<a name="wd1"></a>
 Wszystkie dokumenty magazynowe
 
 ```shell
@@ -1644,14 +1643,14 @@ curl "https://YOUR_DOMAIN.fakturownia.pl/warehouse_documents.json?api_token=API_
 ```
 można przekazywać takie same parametry jakie są przekazywane w aplikacji (na stronie listy faktur)
 
-<a name="wd2"/>
+<a name="wd2"></a>
 Pobranie wybranego dokumentu po ID
 
 ```shell
 curl "https://YOUR_DOMAIN.fakturownia.pl/warehouse_documents/555.json?api_token=API_TOKEN"
 ```
 
-<a name="wd3a"/>
+<a name="wd3a"></a>
 Dodanie dokumentu magazynowego MM
 
 ```shell
@@ -1673,7 +1672,7 @@ curl https://YOUR_DOMAIN.fakturownia.pl/warehouse_documents.json
                 }}'
 ```
 
-<a name="wd3"/>
+<a name="wd3"></a>
 Dodanie dokumentu magazynowego PZ
 
 ```shell
@@ -1696,7 +1695,7 @@ curl https://YOUR_DOMAIN.fakturownia.pl/warehouse_documents.json
 				}}'
 ```
 
-<a name="wd4"/>
+<a name="wd4"></a>
 Dodanie dokumentu magazynowego WZ
 
 ```shell
@@ -1719,7 +1718,7 @@ curl https://YOUR_DOMAIN.fakturownia.pl/warehouse_documents.json
 				}}'
 ```
 
-<a name="wd5"/>
+<a name="wd5"></a>
 Dodanie dokumentu magazynowego PZ dla istniejącego klienta, działu i produktu
 
 ```shell
@@ -1742,7 +1741,7 @@ curl https://YOUR_DOMAIN.fakturownia.pl/warehouse_documents.json
 				}}'
 ```
 
-<a name="wd6"/>
+<a name="wd6"></a>
 Aktualizacja dokumentu
 
 ```shell
@@ -1756,14 +1755,14 @@ curl https://YOUR_DOMAIN.fakturownia.pl/warehouse_documents/555.json
 				    }}'
 ```
 
-<a name="wd7"/>
+<a name="wd7"></a>
 Usunięcie dokumentu
 
 ```shell
 curl -X DELETE "https://YOUR_DOMAIN.fakturownia.pl/warehouse_documents/100.json?api_token=API_TOKEN"
 ```
 
-<a name="wd8"/>
+<a name="wd8"></a>
 Połączenie istniejących faktur i dokumentu magazynowego
 
 ```shell
@@ -1780,11 +1779,11 @@ curl https://YOUR_DOMAIN.fakturownia.pl/warehouse_documents/555.json
 					}}'
 ```
 
-<a name="payments"/>
+<a name="payments"></a>
 
 ## Płatności
 
-<a name="pl1"/>
+<a name="pl1"></a>
 Wszystkie płatności
 
 ```shell
@@ -1794,14 +1793,14 @@ curl "https://YOUR_DOMAIN.fakturownia.pl/banking/payments.json?api_token=API_TOK
 można przekazywać takie same parametry jakie są przekazywane w aplikacji (na stronie listy płatności)
 
 
-<a name="pl2"/>
+<a name="pl2"></a>
 Pobranie wybranej płatności po ID
 
 ```shell
 curl "https://YOUR_DOMAIN.fakturownia.pl/banking/payment/100.json?api_token=API_TOKEN"
 ```
 
-<a name="pl3"/>
+<a name="pl3"></a>
 Dodawanie nowej płatności
 
 ```shell
@@ -1819,13 +1818,13 @@ curl https://YOUR_DOMAIN.fakturownia.pl/banking/payments.json \
 				    }}'
 ```
 
-<a name="pl4"/>
+<a name="pl4"></a>
 Pobranie płatności wraz z danymi przypiętych faktur
 
 ```shell
 curl "https://YOUR_DOMAIN.fakturownia.pl/banking/payments.json?include=invoices&api_token=API_TOKEN"
 ```
-<a name="pl5"/>
+<a name="pl5"></a>
 Dodanie nowej płatności powiązanej z istniejącymi fakturami
 
 ```shell
@@ -1845,7 +1844,7 @@ curl https://YOUR_DOMAIN.fakturownia.pl/banking/payments.json \
 
 Trzeba pamiętać, że faktury zostaną opłacone w takiej kolejności, w jakiej zostały podane w atrybucie `invoice_ids` - jeśli faktura o id = 555 została wystawiona na kwotę 100 zł, a faktura o id = 666 na 200 zł, to po dodaniu płatności pierwsza faktura zostanie opłacona w całości, natomiast druga zostanie opłacona w połowie.
 
-<a name="pl6"/>
+<a name="pl6"></a>
 Aktualizacja płatności
 
 ```shell
@@ -1860,32 +1859,32 @@ curl https://YOUR_DOMAIN.fakturownia.pl/banking/payments/555.json
 						}}'
 ```
 
-<a name="pl7"/>
+<a name="pl7"></a>
 Usuwanie płatności
 
 ```shell
 curl -X DELETE "https://YOUR_DOMAIN.fakturownia.pl/banking/payments/555.json?api_token=API_TOKEN"
 ```
 
-<a name="categories"/>
+<a name="categories"></a>
 
 ## Kategorie
 
-<a name="cat1"/>
+<a name="cat1"></a>
 Lista wszystkich kategorii
 
 ```shell
 curl "https://YOUR_DOMAIN.fakturownia.pl/categories.json?api_token=API_TOKEN"
 ```
 
-<a name="cat2"/>
+<a name="cat2"></a>
 Pobranie pojedycznej kategorii po ID
 
 ```shell
 curl "https://YOUR_DOMAIN.fakturownia.pl/categories/100.json?api_token=API_TOKEN"
 ```
 
-<a name="cat3"/>
+<a name="cat3"></a>
 Dodanie nowej kategorii
 
 ```shell
@@ -1900,7 +1899,7 @@ curl https://YOUR_DOMAIN.fakturownia.pl/categories.json
 				}}'
 ```
 
-<a name="cat4"/>
+<a name="cat4"></a>
 Aktualizacja kategorii
 
 ```shell
@@ -1917,32 +1916,32 @@ curl https://YOUR_DOMAIN.fakturownia.pl/categories/100.json
 ```
 
 
-<a name="cat5"/>
+<a name="cat5"></a>
 Usunięcie kategorii o podanym ID
 
 ```shell
 curl -X DELETE "https://YOUR_DOMAIN.fakturownia.pl/categories/100.json?api_token=API_TOKEN"
 ```
 
-<a name="warehouses"/>
+<a name="warehouses"></a>
 
 ## Magazyny
 
-<a name="wh1"/>
+<a name="wh1"></a>
 Lista wszystkich magazynów
 
 ```shell
 curl "https://YOUR_DOMAIN.fakturownia.pl/warehouses.json?api_token=API_TOKEN"
 ```
 
-<a name="wh2"/>
+<a name="wh2"></a>
 Pobranie pojedycznego magazynu po ID
 
 ```shell
 curl "https://YOUR_DOMAIN.fakturownia.pl/warehouses/100.json?api_token=API_TOKEN"
 ```
 
-<a name="wh3"/>
+<a name="wh3"></a>
 Dodanie nowego magazynu
 
 ```shell
@@ -1958,7 +1957,7 @@ curl https://YOUR_DOMAIN.fakturownia.pl/warehouses.json
 				}}'
 ```
 
-<a name="wh4"/>
+<a name="wh4"></a>
 Aktualizacja magazynu
 
 ```shell
@@ -1976,18 +1975,18 @@ curl https://YOUR_DOMAIN.fakturownia.pl/warehouses/100.json
 ```
 
 
-<a name="wh5"/>
+<a name="wh5"></a>
 Usunięcie magazynu o podanym ID
 
 ```shell
 curl -X DELETE "https://YOUR_DOMAIN.fakturownia.pl/warehouses/100.json?api_token=API_TOKEN"
 ```
 
-<a name="warehouse_actions"/>
+<a name="warehouse_actions"></a>
 
 ## Akcje magazynowe
 
-<a name="wa1"/>
+<a name="wa1"></a>
 Lista wszystkich akcji magazynowych
 
 ```shell
@@ -2012,25 +2011,25 @@ Parametr `to_warehouse_document=` akcje przyjęcia połączone do wybranego doku
 
 Parametr `warehouse_document_id=` wszystkie akcje magazynowego dla wybranego dokumentu magazynowego
 
-<a name="departments"/>
+<a name="departments"></a>
 
 ## Działy
 
-<a name="dep1"/>
+<a name="dep1"></a>
 Lista wszystkich działów
 
 ```shell
 curl "https://YOUR_DOMAIN.fakturownia.pl/departments.json?api_token=API_TOKEN"
 ```
 
-<a name="dep2"/>
+<a name="dep2"></a>
 Pobranie pojedycznego działu po ID
 
 ```shell
 curl "https://YOUR_DOMAIN.fakturownia.pl/departments/100.json?api_token=API_TOKEN"
 ```
 
-<a name="dep3"/>
+<a name="dep3"></a>
 Dodanie nowego działu
 
 ```shell
@@ -2046,7 +2045,7 @@ curl https://YOUR_DOMAIN.fakturownia.pl/departments.json
 				}}'
 ```
 
-<a name="dep4"/>
+<a name="dep4"></a>
 Aktualizacja działu
 
 ```shell
@@ -2063,14 +2062,14 @@ curl https://YOUR_DOMAIN.fakturownia.pl/departments/100.json
         }}'
 ```
 
-<a name="dep5"/>
+<a name="dep5"></a>
 Usunięcie działu o podanym ID
 
 ```shell
 curl -X DELETE "https://YOUR_DOMAIN.fakturownia.pl/departments/100.json?api_token=API_TOKEN"
 ```
 
-<a name="dep6"/>
+<a name="dep6"></a>
 Dodanie logo
 
 ```shell
@@ -2079,7 +2078,7 @@ curl -X PUT  https://YOUR_DOMAIN.fakturownia.pl/departments/DEPARTMENT_ID.json \
     -F 'department[logo]=@/file_path/logo.png'
 ```
 
-<a name="get_token_by_api"/>
+<a name="get_token_by_api"></a>
 
 ## Logowanie i pobranie danych przez API
 
@@ -2111,23 +2110,23 @@ To zapytanie zwraca token i informacje o URL konta w Fakturowni (pola `prefix` i
 UWAGA: api_token jest zwracany tylko jeśli dany użytkownik ma wygenerowany API Token (użytkownik może go dodać w ustawieniach konta)
 
 
-<a name="usersystem"/>
+<a name="usersystem"></a>
 
 ## Dodawanie użytkowników
 
-Po utworzeniu konta API i określeniu właściciela (patrz wyżej), możesz dodać innych użytkowników do konta poprzez API i zdefiniować ich rolę.
-</br>Aby dodać użytkownika do konta, musisz wysłać: :</br>
-   - kod API Twojego konta (```api_token```)<br/>
-   - Twój kod do umieszczenia na stronie (```integration_token```). Aby go otrzymać skontaktuj się z nami poprzez wiadomość e-mail info@fakturownia.pl.</br>
-   - określenia parametru ```invite``` :<br/>
+Po utworzeniu konta API i określeniu właściciela (patrz wyżej), możesz dodać innych użytkowników do konta poprzez API i zdefiniować ich rolę.<br>
+Aby dodać użytkownika do konta, musisz wysłać:
+   - kod API Twojego konta (```api_token```)
+   - Twój kod do umieszczenia na stronie (```integration_token```). Aby go otrzymać skontaktuj się z nami poprzez wiadomość e-mail info@fakturownia.pl.
+   - określenia parametru ```invite``` :
 	  - jeśli użytkownik musi zostać stworzony ("false"): oprócz przesłania adresu e-mail należy także wybrać hasło
-	  - jeśli użytkownik już istnieje i jest powiązany z kontem w Fakturowni ("true"): wymagany jest tylko jego adres e-mail <br/>
-   - rola użytkownika (```role```) :<br/>
+	  - jeśli użytkownik już istnieje i jest powiązany z kontem w Fakturowni ("true"): wymagany jest tylko jego adres e-mail
+   - rola użytkownika (```role```) 
 	  - dla jednej z domyślnych ról wybierz wartość: "member" dla zwykłego użytkownika, "admin" dla administratora lub "accountant" dla księgowego.
-	  - w przypadku niestandardowej roli wpisz wartość "role_1234" lub 1234, która reprezentuje niestandardowy identyfikator roli konta.<br/>
-   - identyfikatory działu (```department_ids```), do których ma dostęp użytkownik nie będący administratorem.<br
+	  - w przypadku niestandardowej roli wpisz wartość "role_1234" lub 1234, która reprezentuje niestandardowy identyfikator roli konta.
+   - identyfikatory działu (```department_ids```), do których ma dostęp użytkownik nie będący administratorem.
 
-Aby dowiedzieć się więcej o rolach użytkowników zapraszamy do bazy wiedzy: https://pomoc.fakturownia.pl/28889135-Wlasne-role-uprawnienia-uzytkownika-w-Fakturowni.<br/>  
+Aby dowiedzieć się więcej o rolach użytkowników zapraszamy do bazy wiedzy: https://pomoc.fakturownia.pl/28889135-Wlasne-role-uprawnienia-uzytkownika-w-Fakturowni.<br>
 
 ```shell
 POST https://YOUR_DOMAIN.fakturownia.pl/account/add_user.json
@@ -2146,11 +2145,11 @@ Content-Type: application/json
 ```
 
 
-<a name="accounts"/>
+<a name="accounts"></a>
 
 ## Konta Systemowe
 
-<a name="a1"/>
+<a name="a1"></a>
 
 ### Zakładanie konta
 
@@ -2219,7 +2218,7 @@ Inne pola dostępne przy tworzeniu nowego konta (pomocne przy integracji)
 	}
 ```
 
-<a name="a2"/>
+<a name="a2"></a>
 
 ### Pobranie informacji o koncie:
 
@@ -2227,7 +2226,7 @@ Inne pola dostępne przy tworzeniu nowego konta (pomocne przy integracji)
 curl "https://YOUR_DOMAIN.fakturownia.pl/account.json?api_token=API_TOKEN&integration_token="
 ```
 
-<a name="a3"/>
+<a name="a3"></a>
 
 ### Usuwanie konta
 
@@ -2253,7 +2252,7 @@ przykład odpowiedzi:
 ```
 
 
-<a name="a4"/>
+<a name="a4"></a>
 
 ### Odłączanie konta
 
@@ -2317,17 +2316,17 @@ SUB_DOMAIN_3 nie było podpięte
 }
 ```
 
-<a name="codes"/>
+<a name="codes"></a>
 
 ## Przykłady w PHP i Ruby
 
-<https://github.com/radgost/fakturownia-api/blob/master/example1.php/>
+<https://github.com/radgost/fakturownia-api/blob/master/example1.php></a>
 
-<https://github.com/radgost/fakturownia-api/blob/master/example1.rb/>
+<https://github.com/radgost/fakturownia-api/blob/master/example1.rb></a>
 
-Ruby Gem do integracji z Fakturownia.pl: <https://github.com/kkempin/fakturownia/>
+Ruby Gem do integracji z Fakturownia.pl: <https://github.com/kkempin/fakturownia></a>
 
-<a name="webhooks"/>
+<a name="webhooks"></a>
 
 ## Webhooki
 
