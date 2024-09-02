@@ -33,7 +33,7 @@ Działające przykłady wywołania API Fakturowni znajdują się też w w syste
 	+ [Usunięcie faktury](#f15)
 	+ [Anulowanie faktury](#f16)
 	+ [Połączenie istniejącej faktury i paragonu](#f17)
-    + [Dodawanie faktury do istniejącego paragonu](#f17b)
+    	+ [Dodawanie faktury do istniejącego paragonu](#f17b)
 	+ [Pobranie załączników w archiwum ZIP](#f18)
 	+ [Dodanie załącznika](#f18b)
 	+ [Wydruk fiskalny](#f19)
@@ -41,6 +41,7 @@ Działające przykłady wywołania API Fakturowni znajdują się też w w syste
     + [Dodanie domyślnych uwag z ustawień konta](#f21)
     + [Zaczytanie cen produktów z cennika podczas wystawiania faktury](#f22)
     + [Pobranie faktury razem z połączonymi płatnościami](#f23)
+    + [Odbiorcy/Wystawcy na fakturze](#f24)
 + [Link do podglądu faktury i pobieranie do PDF](#view_url)
 + [Przykłady użycia  - zakup szkolenia](#use_case1)
 + [Faktury - specyfikacja, rodzaje pól, kody GTU](#invoices)
@@ -854,6 +855,94 @@ Jeśli w żądaniu przesyłamy `client_id`, a w karcie tego klienta mamy określ
 
 ```shell
 curl https://twojaDomena.fakturownia.pl/invoices/INVOICE_ID.json?api_token=API_TOKEN&additional_fields[invoice]=connected_payments
+```
+
+<a name="f24"></a>
+
+## Odbiorcy/Wystawcy na fakturze
+
+Dodawanie:
+```shell
+curl https://YOUR_DOMAIN.fakturownia.pl/invoices.json \
+    -X POST \
+    -H 'Accept: application/json' \
+    -H 'Content-Type: application/json' \
+    -d '{
+        "api_token": "API_TOKEN",
+        "invoice": {
+            "issue_date": "2024-08-01",
+            "seller_name": "Wystawca Sp. z o.o.",
+            "buyer_name": "Klient1 Sp. z o.o.",
+            "positions":[
+                {"name":"Produkt A1", "tax":23, "total_price_gross":10.23, "quantity":1},
+                {"name":"Produkt A2", "tax":0, "total_price_gross":50, "quantity":3}
+            ],
+            "recipients": [
+                {"name": "Odbiorca1", "company": "true", "email": "odbiorca1@email.pl"},
+                {"name": "Odbiorca2", "company": "true", "email": "odbiorca2@email.pl"},
+            ],
+            "issuers": [
+                {"name": "Wystawca1", "company": "true", "email": "wystawca1@email.pl"},
+                {"name": "Wystawca2", "company": "true", "email": "wystawca2@email.pl"},
+            ]
+        }
+    }'
+```
+Edytowanie:
+```shell
+curl https://YOUR_DOMAIN.fakturownia.pl/invoices/111.json \
+    -X PUT \
+    -H 'Accept: application/json'  \
+    -H 'Content-Type: application/json' \
+    -d '{
+        "api_token": "API_TOKEN",
+        "invoice": {
+            "recipients": [{"id":1, "name": "Nowa nazwa"}]
+        }
+    }'
+```
+Usuwanie:
+```shell
+curl https://YOUR_DOMAIN.fakturownia.pl/invoices/111.json \
+    -X PUT \
+    -H 'Accept: application/json'  \
+    -H 'Content-Type: application/json' \
+    -d '{
+        "api_token": "API_TOKEN",
+        "invoice": {
+            "recipients": [{"id":1, "_destroy": 1}]
+        }
+    }'
+```
+
+Pola odbiorcy/wystawcy (recipient/issuer):
+```shell
+   "name": "Nazwa"
+   "first_name": "Imię"
+   "last_name": "Nazwisko"
+   "tax_no": "1000000000"
+   "company":  true/false - pole określa, czy dany podmiot jest firmą
+   "country": "Kraj"
+   "city": "Miasto"
+   "post_code": "00-000"
+   "street": "Ulica 1"
+   "phone": "711000000"
+   "email": "email@test.pl"
+   "note": "Dodatkowe uwagi"
+   "role": "Dodatkowy odbiorca" - pole określa rodzaj podmiotów (używane tylko przy włączonym KSEF na koncie)
+	Dozwolone wartości dla odbiorcy (recipient):
+		"Odbiorca"
+		"Dodatkowy nabywca"
+		"Dokonujący płatności"
+		"Jednostka samorządu terytorialnego"
+		"Członek grupy VAT"
+	Dozwolone wartości dla wystawcy (issuer):
+	   	"Wystawca faktury"
+		"Faktor"
+		"Podmiot pierwotny"
+		"Jednostka samorządu terytorialnego"
+		"Członek grupy VAT"
+   "participation": 10.00 - pole określa udział podmiotu (używane tylko przy włączonym KSEF na koncie)
 ```
 
 <a name="view_url"></a>
