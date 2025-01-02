@@ -22,6 +22,7 @@ Działające przykłady wywołania API Fakturowni znajdują się też w w syste
 	+ [Dodanie faktury podobnej (po ID innej faktury, np. zaliczkowej z zamówienia, końcowej z zaliczkowych itp.)](#f8b)
 	+ [Dodanie faktury OSS](#f8c)
 	+ [Dodanie nowej faktury korygującej](#f9)
+    + [Dodanie faktury kosztowej](#f21)
 	+ [Aktualizacja faktury](#f10)
 	+ [Aktualizacja pozycji na fakturze](#f10b)
 	+ [Usunięcie pozycji na fakturze](#f10c)
@@ -440,6 +441,38 @@ curl http://YOUR_DOMAIN.fakturownia.pl/invoices.json \
             }]
         }}'
 ```
+<a name="f21"/>
+Dodanie faktury kosztowej
+
+W celu wystawienia faktury kosztowej konieczne jest przekazanie w parametrach pola `income="0"`.
+
+Ważne! W przypadku faktur kosztowych wszystkie pola zaczynające się od `seller_` zostaną wyświetlone na fakturze w sekcji "Nabywca", a pola zaczynające się od `buyer_` pokażą się w sekcji "Sprzedawca".
+
+```shell
+curl https://YOUR_DOMAIN.fakturownia.pl/invoices.json \
+    -H 'Accept: application/json' \
+    -H 'Content-Type: application/json' \
+    -d '{
+        "api_token": "API_TOKEN",
+        "invoice": {
+            "kind":"vat",
+            "income": "0",
+            "sell_date": "2013-01-16",
+            "issue_date": "2013-01-16",
+            "payment_to": "2013-01-23",
+            "seller_name": "Wystawca Sp. z o.o.",
+            "seller_tax_no": "5252445767",
+            "buyer_name": "Klient1 Sp. z o.o.",
+            "buyer_email": "buyer@testemail.pl",
+            "buyer_tax_no": "5252445767",
+            "positions":[
+                {"name":"Produkt A1", "tax":23, "total_price_gross":10.23, "quantity":1},
+            ]
+        }
+    }'
+```
+
+Pola zaczynające się od `seller_` oraz `buyer_` można odpowiednio zastąpić przez `department_id` oraz `client_id`.
 
 <a name="f10"/>
 Aktualizacja faktury
