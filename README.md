@@ -502,7 +502,7 @@ curl https://YOUR_DOMAIN.fakturownia.pl/invoices.json \
             }]
         }}'
 ```
-<a name="f21"/>
+<a name="f21"></a>
 Dodanie faktury kosztowej
 
 W celu wystawienia faktury kosztowej konieczne jest przekazanie w parametrach pola `income="0"`.
