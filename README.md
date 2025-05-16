@@ -2469,4 +2469,4 @@ curl "https://YOUR_DOMAIN.fakturownia.pl/webhooks.json?api_token=API_TOKEN"
 
 ## E-paragony i Paragony papierowe
 
-tu opis: https://github.com/eparagony/api
+tu opis: https://github.com/e-paragony/api
