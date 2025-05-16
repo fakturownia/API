@@ -115,7 +115,7 @@ Działające przykłady wywołania API Fakturowni znajdują się też w w syste
     + [Odłączanie konta](#a4)
 + [Przykłady w PHP i Ruby](#codes)
 + [Webhooki](#webhooks)
-
++ [E-paragony i Paragony papierowe](#eparagony)
 
 <a name="token"></a>
 
@@ -2464,3 +2464,9 @@ Przykład:
 ```shell
 curl "https://YOUR_DOMAIN.fakturownia.pl/webhooks.json?api_token=API_TOKEN"
 ```
+
+<a name="eparagony"></a>
+
+## E-paragony i Paragony papierowe
+
+tu opis: https://github.com/eparagony/api
