@@ -106,6 +106,12 @@ Działające przykłady wywołania API Fakturowni znajdują się też w w syste
 	+ [Aktualizacja_działu](#dep4)
   	+ [Usunięcie działu o podanym ID](#dep5)
 	+ [Dodanie logo](#dep6)
++ [Wystawcy](#issuers)
+	+ [Lista wystawców](#issuers1)
+	+ [Pobranie wystawcy po ID](#issuers2)
+	+ [Dodanie nowego wystawcy](#issuers3)
+	+ [Aktualizacja wystawcy](#issuers4)
+    + [Usunięcie wystawcy po ID](#issuers5)
 + [Logowanie i pobranie Tokena przez API](#get_token_by_api)
 + [Dodawanie użytkowników](#usersystem)
 + [Konta systemowe](#accounts)
@@ -2199,6 +2205,60 @@ Dodanie logo
 curl -X PUT  https://YOUR_DOMAIN.fakturownia.pl/departments/DEPARTMENT_ID.json \
     -F 'api_token=API_TOKEN' \
     -F 'department[logo]=@/file_path/logo.png'
+```
+<a name="issuers"></a>
+
+## Wystawcy
+
+<a name="issuers1"></a>
+Lista wszystkich wystawców
+
+```shell
+curl "https://YOUR_DOMAIN.fakturownia.pl/issuers.json?api_token=API_TOKEN"
+```
+
+<a name="issuers2"></a>
+Pobranie wystawcy po ID
+
+```shell
+curl "https://YOUR_DOMAIN.fakturownia.pl/issuers/1.json?api_token=API_TOKEN"
+```
+
+<a name="issuers3"></a>
+Dodanie nowego wystawcy
+
+```shell
+curl https://YOUR_DOMAIN.fakturownia.pl/issuers.json
+				-H 'Accept: application/json'
+				-H 'Content-Type: application/json'
+				-d '{
+				"api_token": "API_TOKEN",
+				"issuer": {
+					"name":"Issuer",
+					"tax_no": "4170106662"
+				}}'
+```
+
+<a name="issuers4"></a>
+Aktualizacja wystawcy
+
+```shell
+curl https://YOUR_DOMAIN.fakturownia.pl/issuers/1.json
+        -X PUT
+        -H 'Accept: application/json'
+        -H 'Content-Type: application/json'
+        -d '{
+        "api_token": "API_TOKEN",
+        "issuer": {
+          "name":"new_name",
+        }}'
+```
+
+<a name="issuers5"></a>
+Usunięcie wystawcy po ID
+
+```shell
+curl -X DELETE "https://YOUR_DOMAIN.fakturownia.pl/issuers/1.json?api_token=API_TOKEN"
 ```
 
 <a name="get_token_by_api"></a>
