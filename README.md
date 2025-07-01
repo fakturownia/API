@@ -1178,7 +1178,6 @@ Pole: `kind`
 	"advance" - faktura zaliczkowa
 	"final" - faktura końcowa
 	"correction" - faktura korekta
-	"vat_mp" - faktura MP
 	"invoice_other" - inna faktura
 	"vat_margin" - faktura marża
 	"kp" - kasa przyjmie
