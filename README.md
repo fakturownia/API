@@ -1117,6 +1117,7 @@ Pola faktury
 "exchange_currency" : "", - przeliczona waluta (przeliczanie sumy i podatku na inną walutę), np. "PLN"
 "exchange_kind" : "", - źródło kursu do przeliczenia waluty ("ecb", "nbp", "cbr", "nbu", "nbg", "own")
 "exchange_currency_rate" : "", - własny kurs przeliczenia waluty (używany, gdy parametr exchange_kind ustawiony jest na "own")
+"exchange_note": "", - notatka do kursu, generowana automatycznie dla kursów innych niż "own", dla "own" należy podać własną notatkę
 "invoice_template_id" : "1",
 "description" : "", - uwagi na fakturze
 "description_footer" : "", - opis umieszczony w stopce faktury
