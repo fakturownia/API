@@ -1128,25 +1128,24 @@ Pola faktury
 "additional_invoice_field" : "" - wartość dodatkowego pola na fakturze, Ustawienia > Ustawienia Konta > Konfiguracja > Faktury i dokumenty > Dodatkowe pole na fakturze
 "internal_note" : "" - treść notatki prywatnej na fakturze, niewidoczna na wydruku.
 "exclude_from_stock_level" : "" - informacja, czy system powinien liczyć tę fakturę do stanów magazynowych (true np., gdy faktura wystawiona na podstawie paragonu)
-"gtu_codes" : [] - wartości kodów GTU produktów zawartych na fakturze - UWAGA - podane wartości nadpiszą wartości kodów GTU pobranych z kart produktów podawanych w pozycjach faktury, wartości tych kodów są nadrzędne dla całej faktury
 "procedure_designations" : [] - oznaczenia dotyczące procedur
 "positions":
-   		"product_id" : "1",
-   		"name" : "Fakturownia Start",
-   		"additional_info" : "", - dodatkowa informacja na pozycji faktury (np. PKWiU)
-   		"discount_percent" : "", - zniżka procentowa (uwaga: aby rabat był wyliczany trzeba ustawić pole: 'show_discount' na '1' oraz przed wywołaniem należy sprawdzić czy w Ustawieniach Konta pole: "Jak obliczać rabat" ustawione jest na "procentowo")
-   		"discount" : "", - zniżka kwotowa (uwaga: aby rabat był wyliczany trzeba ustawić pole: 'show_discount' na 1 oraz przed wywołaniem należy sprawdzić czy w Ustawieniach Konta pole: "Jak obliczać rabat" ustawione jest na "kwotowo")
-   		"quantity" : "1",
-   		"quantity_unit" : "szt",
-   		"price_net" : "59,00", - jeśli nie jest podana to zostanie wyliczona
-   		"tax" : "23", - może być stawka lub "np" - dla nie podlega, "zw" - dla zwolniona
-   		"price_gross" : "72,57", - jeśli nie jest podana to zostanie wyliczona
-   		"total_price_net" : "59,00", - jeśli nie jest podana to zostanie wyliczona
-   		"total_price_gross" : "72,57",
-		"description" : opis pozycji faktury
-   		"code" : "" - kod produktu,
-                "gtu_code" : "" - kod GTU produktu,
-		"lump_sum_tax" : "17", - stawka ryczałtu (możliwa do ustawienia jedynie, gdy wystawiamy fakturę dla działu lub firmy z włączoną opcją "Płatnik zryczałtowanego podatku dochodowego")
+        "product_id" : "1",
+        "name" : "Fakturownia Start",
+        "additional_info" : "", - dodatkowa informacja na pozycji faktury (np. PKWiU)
+        "discount_percent" : "", - zniżka procentowa (uwaga: aby rabat był wyliczany trzeba ustawić pole: 'show_discount' na '1' oraz przed wywołaniem należy sprawdzić czy w Ustawieniach Konta pole: "Jak obliczać rabat" ustawione jest na "procentowo")
+        "discount" : "", - zniżka kwotowa (uwaga: aby rabat był wyliczany trzeba ustawić pole: 'show_discount' na 1 oraz przed wywołaniem należy sprawdzić czy w Ustawieniach Konta pole: "Jak obliczać rabat" ustawione jest na "kwotowo")
+        "quantity" : "1",
+        "quantity_unit" : "szt",
+        "price_net" : "59,00", - jeśli nie jest podana to zostanie wyliczona
+        "tax" : "23", - może być stawka lub "np" - dla nie podlega, "zw" - dla zwolniona
+        "price_gross" : "72,57", - jeśli nie jest podana to zostanie wyliczona
+        "total_price_net" : "59,00", - jeśli nie jest podana to zostanie wyliczona
+        "total_price_gross" : "72,57",
+        "description" : opis pozycji faktury
+        "code" : "" - kod produktu,
+        "gtu_code" : "" - kod GTU produktu,
+        "lump_sum_tax" : "17", - stawka ryczałtu (możliwa do ustawienia jedynie, gdy wystawiamy fakturę dla działu lub firmy z włączoną opcją "Płatnik zryczałtowanego podatku dochodowego")
 "calculating_strategy":
 {
   "position": "default" lub "keep_gross" - metoda wyliczania kwot na pozycjach faktury
@@ -1333,35 +1332,6 @@ curl https://YOUR_DOMAIN.fakturownia.pl/invoices.json \
             ]
         }}'
 ```
-* `Podanie kodów łącznie dla całej faktury` - możemy również podać zestaw kodów GTU łącznie dla całej faktury korzystając z pola `gtu_codes`. UWAGA - kody te są nadrzędne dla całej faktury - tylko wartości z `gtu_codes` zostaną wyświetlone na fakturze. Według przykładu poniżej na fakturze zostaną wyświetlone tylko kody ` "GTU_03", "GTU_04"`, niezależnie czy na pozycjach zostały podane inne kody GTU, bądź czy produkty z przykładu o id 1 lub 5 mają inne kody zdefiniowane w systemie.
-
-```shell
-curl https://YOUR_DOMAIN.fakturownia.pl/invoices.json \
-    -H 'Accept: application/json' \
-    -H 'Content-Type: application/json' \
-    -d '{
-        "api_token": "API_TOKEN",
-        "invoice": {
-            "kind":"vat",
-            "number": null,
-            "sell_date": "2013-01-16",
-            "issue_date": "2013-01-16",
-            "payment_to": "2013-01-23",
-            "seller_name": "Wystawca Sp. z o.o.",
-            "seller_tax_no": "6272616681",
-            "buyer_name": "Klient1 Sp. z o.o.",
-            "buyer_email": "buyer@testemail.pl",
-            "buyer_tax_no": "6272616681",
-            "gtu_codes": ["GTU_03", "GTU_04"],
-            "positions":[
-                {"product_id": 1, "quantity":2},
-                {"product_id": 5, "quantity":4},
-                {"name":"Produkt A2", "tax":0, "total_price_gross":50, "quantity":3,  "gtu_code": "GTU_07"} #Kod GTU_07 nie pojawi się na fakturze
-            ]
-        }
-    }'
-```
-
 
 Pole: `gtu_codes` - typy kodów GTU
 ```shell
