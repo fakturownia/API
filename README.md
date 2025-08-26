@@ -1107,7 +1107,7 @@ Pola faktury
 "oid_unique" : jeśli to pole będzie ustawione na 'yes' wtedy nie system nie pozwoli stworzyc 2 faktur o takim samym OID (może to być przydatne w synchronizacji ze sklepem internetowym)
 "warehouse_id" : "1090",
 "seller_person" : imię i nazwisko wystawcy np.: "Imię Nazwisko",
-"buyer_person": imię i nazwisko odbiorcy np.: "Imię Nazwisko". W przypadku przesłania żądania dla osoby prywatnej ("buyer_company": false) bez podania w nim pola "buyer_person", zostanie ono uzupełnione automatycznie danymi nabywcy ("buyer_first_name" i "buyer_last_name"). Jeśli jednak nie chcemy mieć podpisu odbiorcy na fakturze, możemy w żądaniu przesłać "buyer_person": "".
+"buyer_person": imię i nazwisko odbiorcy np.: "Imię Nazwisko". Jeśli pole "buyer_person" nie zostanie przesłane, będzie ono uzupełnione automatycznie danymi nabywcy ("buyer_first_name" i "buyer_last_name"). Jeśli jednak nie chcemy mieć podpisu odbiorcy na fakturze, możemy w żądaniu przesłać "buyer_person": "".
 "buyer_first_name" : "Imie",
 "buyer_last_name" : "Nazwisko",
 "paid_date" : "",
