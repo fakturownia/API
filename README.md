@@ -1527,6 +1527,13 @@ Lista produktów
 curl "https://YOUR_DOMAIN.fakturownia.pl/products.json?api_token=API_TOKEN&page=1"
 ```
 
+Lista dodanych/zmienionych produktów (np. dostępna ilość, nazwa, cena) po wskazanej dacie np. 2025-11-01
+
+```shell
+curl "https://YOUR_DOMAIN.fakturownia.pl/products.json?api_token=API_TOKEN&date_from=DATA&page=1"
+```
+
+
 <a name="p2"></a>
 Lista produktów ze stanem magazynowym podanego magazynu
 
