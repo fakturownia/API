@@ -1061,7 +1061,7 @@ Pola faktury
 "accounting_kind": "", - rodzaj wydatku dla faktur kosztowych - (purchases, expenses, media, salary, incident, fuel0, fuel_expl75, fuel_expl100, fixed_assets, fixed_assets50, no_vat_deduction)
 "seller_name" : "Radgost Sp. z o.o.", - sprzedawca
 "seller_tax_no" : "525-244-57-67", - numer identyfikacji podatkowej sprzedawcy (domyślnie NIP)
-"seller_tax_no_kind" : "", - rodzaj numeru identyfikacyjnego sprzedawcy; pole puste (domyślnie) jest interpretowane jako "NIP"; w innym wypadku traktowane jako dowolny wpis własny (np. PESEL, REGON)
+"seller_tax_no_kind" : "", - rodzaj numeru identyfikacyjnego sprzedawcy; pole puste (domyślnie) jest interpretowane jako "NIP"; w innym wypadku traktowane jako dowolny wpis własny (np. PESEL, REGON); po wejściu KSeF jedynymi dopuszczalnymi wartościami (oprócz pustego pola) będą: "nip_ue" (NIP UE), "other" (Numer identyfikacji podatkowej), "empty" (Brak nr. id. podatkowej)
 "seller_bank_account" : "24 1140 1977 0000 5921 7200 1001", - konto bankowe sprzedawcy
 "seller_bank" : "BRE Bank",
 "seller_post_code" : "02-548",
@@ -1078,7 +1078,7 @@ Pola faktury
 "client_id" : "-1" - id kupującego (jeśi -1 to klient zostanie utworzony w systemie)
 "buyer_name" : "Nazwa klienta" - nabywca
 "buyer_tax_no" : "525-244-57-67", - numer identyfikacji podatkowej nabywcy (domyślnie NIP)
-"buyer_tax_no_kind" : "", - rodzaj numeru identyfikacyjnego nabywcy; pole puste (domyślnie) jest interpretowane jako "NIP"; w innym wypadku traktowane jako wpis własny (np. PESEL, REGON)
+"buyer_tax_no_kind" : "", - rodzaj numeru identyfikacyjnego nabywcy; pole puste (domyślnie) jest interpretowane jako "NIP"; w innym wypadku traktowane jako wpis własny (np. PESEL, REGON); po wejściu KSeF jedynymi dopuszczalnymi wartościami (oprócz pustego pola) będą: "nip_ue" (NIP UE), "other" (Numer identyfikacji podatkowej), "empty" (Brak nr. id. podatkowej)
 "disable_tax_no_validation" : "",
 "buyer_post_code" : "30-314", - kod pocztowy nabywcy
 "buyer_city" : "Warszawa", - miasto nabywcy
@@ -1429,7 +1429,7 @@ Pola klienta
 ```shell
     "name": "Klient testowy" - nazwa klienta
     "shortcut": "Klient" - skrócona nazwa klienta
-    "tax_no_kind": "NIP" - rodzaj numeru identyfikacyjnego np.: "NIP", "PESEL" itd.
+    "tax_no_kind": "NIP" - rodzaj numeru identyfikacyjnego np.: "NIP", "PESEL" itd.; po wejściu KSeF jedynymi dopuszczalnymi wartościami (oprócz pustego pola) będą: "nip_ue" (NIP UE), "other" (Numer identyfikacji podatkowej), "empty" (Brak nr. id. podatkowej)
     "tax_no": "1234567890" - numer identyfikacyjny
     "register_number": "123456789" - numer REGON
     "accounting_id": "" - identyfikator w programie księgowym
