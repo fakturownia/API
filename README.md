@@ -1165,6 +1165,11 @@ Pola faktury
 "corrected_content_before": "", Treść korygowana (pole ma zastosowanie dla faktur korygujących)
 "corrected_content_after": "", Treść prawidłowa (pole ma zastosowanie dla faktur korygujących)
 "accounting_note_kind": "credit" lub "debit", w zależności, czy Nota księgowa jest obciążąjąca czy uznaniowa (pole ma zastosowanie tylko dla not księgowych)
+"procedure_vat_margin": pole wymagane dla faktur Marża, przyjmuje jedną z 4 wartości:
+	"procedura marży dla biur podróży"
+	"procedura marży – towary używane"
+	"procedura marży – dzieła sztuki"
+    "procedura marży – przedmioty kolekcjonerskie i antyki"
 ```
 
 Wartości pól
