@@ -355,7 +355,7 @@ curl https://YOUR_DOMAIN.fakturownia.pl/invoices.json \
     }'
 ```
 
-Dodanie faktury zaliczkowej na podstawie zamówienia – % pełnej kwoty
+Dodanie faktury zaliczkowej na podstawie zamówienia – % pełnej kwoty (podłączenie dokładnie 1 zamówienia jest wymagane; użycie `advance_creation_mode: percent/amount` od razu łączy z zamówieniem z `copy_invoice_from`)
 
 ```shell
 curl https://YOUR_DOMAIN.fakturownia.pl/invoices.json \
@@ -373,7 +373,7 @@ curl https://YOUR_DOMAIN.fakturownia.pl/invoices.json \
     }'
 ```
 
-Dodanie faktury zaliczkowej na podstawie zamówienia – podana kwota brutto
+Dodanie faktury zaliczkowej na podstawie zamówienia – podana kwota brutto (podłączenie dokładnie 1 zamówienia jest wymagane; użycie `advance_creation_mode: percent/amount` od razu łączy z zamówieniem z `copy_invoice_from`)
 
 ```shell
 curl https://YOUR_DOMAIN.fakturownia.pl/invoices.json \
@@ -391,7 +391,7 @@ curl https://YOUR_DOMAIN.fakturownia.pl/invoices.json \
     }'
 ```
 
-Dodanie faktury końcowej na podstawie zamówienia i faktur zaliczkowych
+Dodanie faktury końcowej na podstawie zamówienia i faktur zaliczkowych (podłącznie przynajmniej jednej zaliczki przez `invoice_ids` jest wymagane)
 
 ```shell
 curl https://YOUR_DOMAIN.fakturownia.pl/invoices.json \
