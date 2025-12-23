@@ -1079,13 +1079,13 @@ Pola faktury
 "buyer_name" : "Nazwa klienta" - nabywca
 "buyer_tax_no" : "525-244-57-67", - numer identyfikacji podatkowej nabywcy (domyślnie NIP)
 "buyer_tax_no_kind" : "", - rodzaj numeru identyfikacyjnego nabywcy; pole puste (domyślnie) jest interpretowane jako "NIP"; w innym wypadku traktowane jako wpis własny (np. PESEL, REGON); po wejściu KSeF jedynymi dopuszczalnymi wartościami (oprócz pustego pola) będą: "nip_ue" (NIP UE), "other" (Numer identyfikacji podatkowej), "empty" (Brak nr. id. podatkowej)
-"disable_tax_no_validation" : "",
 "buyer_post_code" : "30-314", - kod pocztowy nabywcy
 "buyer_city" : "Warszawa", - miasto nabywcy
 "buyer_street" : "Nowa 44", - ulica nabywcy
 "buyer_country" : "PL", - kraj nabywcy (ISO 3166)
 "buyer_note" : "", - dodatkowy opis nabywcy
 "buyer_email" : "", - email nabywcy
+"buyer_company" : true/false - pole określa, czy dany podmiot jest firmą (wymagane do KSeF)
 "recipient_id" : "", - id odbiorcy (id klienta z systemu)
 "recipient_name" : "", - nazwa odbiorcy
 "recipient_street" : "", - ulica odbiorcy
@@ -1095,6 +1095,7 @@ Pola faktury
 "recipient_email" : "", - e-mail odbiorcy
 "recipient_phone" : "", - numer telefonu odbiorcy
 "recipient_note" : "", - dodatkowy opis odbiorcy
+"disable_tax_no_validation" : "",
 "additional_info" : "0" - czy wyświetlać dodatkowe pole na pozycjach faktury
 "additional_info_desc" : "PKWiU" - nazwa dodatkowej kolumny na pozycjach faktury
 "show_discount" : "0" - czy rabat
@@ -1170,6 +1171,8 @@ Pola faktury
 	"procedura marży – towary używane"
 	"procedura marży – dzieła sztuki"
     "procedura marży – przedmioty kolekcjonerskie i antyki"
+"gov_id": "9999999999-20260201-FFFFFFFFFFFF-FF" - tylko do odczytu, ksef id
+"gov_status": null | "ok" | "processing" | "send_error" | "server_error" | "not_applicable" | "not_connected" - tylko do odczytu, status wysyłki dokumentu do ksef
 ```
 
 Wartości pól
