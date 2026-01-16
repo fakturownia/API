@@ -122,6 +122,7 @@ Działające przykłady wywołania API Fakturowni znajdują się też w w syste
 + [Przykłady w PHP i Ruby](#codes)
 + [Webhooki](#webhooks)
 + [E-paragony i Paragony papierowe](#eparagony)
++ [KSeF - Przewodnik integracji](KSeF.md)
 
 <a name="token"></a>
 
