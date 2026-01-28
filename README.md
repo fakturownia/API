@@ -969,20 +969,24 @@ Pola odbiorcy/wystawcy (recipient/issuer):
    "phone": "711000000"
    "email": "email@test.pl"
    "note": "Dodatkowe uwagi"
-   "role": "Dodatkowy odbiorca" - pole określa rodzaj podmiotów (używane tylko przy włączonym KSEF na koncie)
+   "role": "Dodatkowy odbiorca" - pole określa rodzaj podmiotów; przy tworzeniu faktur, jeżeli nie podano, zostanie domyślnie użyta pierwsza z dozwolonych wartości -> "Odbiorca"/"Wystawca faktury" (używane tylko przy włączonym KSEF na koncie)
 	Dozwolone wartości dla odbiorcy (recipient):
 		"Odbiorca"
 		"Dodatkowy nabywca"
 		"Dokonujący płatności"
-		"Jednostka samorządu terytorialnego"
-		"Członek grupy VAT"
+		"JST – odbiorca"
+		"Członek GV – odbiorca"
+        "Pracownik"
+        "Rola inna"
 	Dozwolone wartości dla wystawcy (issuer):
 	   	"Wystawca faktury"
 		"Faktor"
 		"Podmiot pierwotny"
-		"Jednostka samorządu terytorialnego"
-		"Członek grupy VAT"
+		"JST – wystawca"
+		"Członek GV – wystawca"
+        "Rola inna"
    "participation": 10.00 - pole określa udział podmiotu (używane tylko przy włączonym KSEF na koncie)
+   "role_description": "Opis roli nie zdefiniowanej w KSeF" - max 25 znaków, należy podać tylko jeżeli w "role" wybrano "Rola inna" (używane tylko przy włączonym KSEF na koncie)
 ```
 
 <a name="view_url"></a>
