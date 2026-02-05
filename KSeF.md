@@ -805,6 +805,11 @@ Pole `buyer_tax_no` jest wymagane dla firm (`buyer_company=true`), **chyba że**
 ### Uwagi
 
 - Domyślnie (gdy pole `tax_no_kind` jest puste lub nie jest przekazane) system zakłada standardowy polski NIP.
+
+  Dodatkowo przy Nabywcy funkcjonuje logika, która automatycznie ustawia wartość pola `:buyer_tax_no_kind` (tylko jak jest puste lub nie jest przekazane) na podstawie przesłanego numeru `:buyer_tax_no`:
+  - `:buyer_tax_no` z prefiksem kraju UE (inny niż PL) -> `:buyer_tax_no_kind` zostanie ustawiony na `"nip_ue"`
+  - `:buyer_tax_no` z prefiksem kraju innym niż z UE i PL -> `:buyer_tax_no_kind` zostanie ustawiony na `"other"`
+  - `:buyer_tax_no` bez prefiksu kraju -> nic nie zostanie zmienione
 - Dla `issuers` i `recipients` również dostępne jest pole `tax_no_kind` z tymi samymi dozwolonymi wartościami.
 - Przy korekcie faktury pole `buyer_tax_no_kind` nie może być zmienione względem oryginalnej faktury.
 
