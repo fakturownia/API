@@ -1078,6 +1078,8 @@ Pola faktury
 "seller_fax" : "",
 "seller_phone" : "",
 "seller_bdo_no": "1234567899", - numer BDO
+"seller_jst": "0", Czy faktura dotyczy jednostki samorządu terytorialnego? (tylko wydatki)
+"seller_gv": "0", Czy faktura dotyczy członka grupy VAT? (tylko wydatki)
 "use_invoice_issuer": "1",
 "invoice_issuer": "Dane Wystawcy",
 "client_id" : "-1" - id kupującego (jeśi -1 to klient zostanie utworzony w systemie)
@@ -1091,6 +1093,8 @@ Pola faktury
 "buyer_country" : "PL", - kraj nabywcy (ISO 3166)
 "buyer_note" : "", - dodatkowy opis nabywcy
 "buyer_email" : "", - email nabywcy
+"buyer_jst": "1", Czy faktura dotyczy jednostki samorządu terytorialnego? (tylko przychody)
+"buyer_gv": "1", Czy faktura dotyczy członka grupy VAT? (tylko przychody)
 "recipient_id" : "", - id odbiorcy (id klienta z systemu)
 "recipient_name" : "", - nazwa odbiorcy
 "recipient_street" : "", - ulica odbiorcy
