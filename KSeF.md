@@ -17,9 +17,10 @@ Ten dokument jest przeznaczony dla użytkowników Fakturowni, którzy wystawiaj�
 11. [Odbiorca faktury (Recipient)](#odbiorca-faktury-recipient)
 12. [Rodzaj identyfikatora podatkowego (tax_no_kind)](#rodzaj-identyfikatora-podatkowego-tax_no_kind)
 13. [Korekty faktur](#korekty-faktur)
-14. [Checklista migracji](#checklista-migracji)
-15. [Przykłady curl](#przykłady-curl)
-16. [FAQ i rozwiązywanie problemów](#faq-i-rozwiązywanie-problemów)
+14. [Wysyłanie faktur emailem do klientów](#wysyłanie-faktur-emailem-do-klientów)
+15. [Checklista migracji](#checklista-migracji)
+16. [Przykłady curl](#przykłady-curl)
+17. [FAQ i rozwiązywanie problemów](#faq-i-rozwiązywanie-problemów)
 
 ---
 
@@ -832,6 +833,23 @@ Tworzenie korekt przez API działa tak samo jak bez KSeF. Główne różnice po 
 W odpowiedzi API dla korekty pojawia się pole `gov_corrected_invoice_number` zawierające numer KSeF korygowanej faktury. Możesz też ustawić je ręcznie przy tworzeniu korekty.
 
 **Uwaga:** W KSeF nie można usunąć faktury - jedynym sposobem "anulowania" jest wystawienie korekty do zera.
+
+---
+
+## Wysyłanie faktur emailem do klientów
+
+Gdy KSeF jest aktywny, wysyłka faktur do klientów będących firmami, możlwie jest dopiero po wysłaniu faktury do KSeF, oraz nadaniu fakturze numeru KSeF.
+W przeciwnym wypadku system zwróci w odpowiedzi na żądanie wysyłki odpowiedź:
+
+```
+ {
+    "message": "Faktura nie może zostać wysłana - brak numeru KSeF",
+    "status": "error"
+  }
+```
+**Uwaga:** Status HTTP wiadomości to 200. Należy sprawdzić treść wiadomości zwrotnej.
+
+Wysyłka faktur do klientów nie będących firmami nie uległa zmianie.
 
 ---
 
