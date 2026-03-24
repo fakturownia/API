@@ -997,8 +997,6 @@ Pola odbiorcy/wystawcy (recipient/issuer):
 
 Uwagi (descriptions) to nowy model przechowywania dodatkowych opisów na fakturze, wprowadzony w związku z wymaganiami KSeF. Każda uwaga to osobny rekord z polami `kind` (rodzaj/nagłówek) i `content` (treść). Faktura może posiadać wiele uwag jednocześnie.
 
-> **Uwaga:** Funkcjonalność `descriptions` dostępna jest wyłącznie dla kont z polską wersją językową (locale: `pl`).
-
 > **Kompatybilność wsteczna:** Pole `description` (dotychczasowe uwagi) nadal działa. Przy wysłaniu `description` bez `descriptions` system automatycznie skonwertuje treść na nowy format (utworzy jeden rekord `descriptions` z przesłaną treścią). Pole `description` w odpowiedzi API zwraca zawartość pierwszej uwagi (`descriptions[0].content`).
 
 ### Pobieranie uwag
@@ -1006,7 +1004,7 @@ Uwagi (descriptions) to nowy model przechowywania dodatkowych opisów na fakturz
 Aby pobrać uwagi przypisane do faktury, należy użyć parametru `include=descriptions`:
 
 ```shell
-curl https://YOUR_DOMAIN.fakturownia.pl/invoices/INVOICE_ID.json?api_token=API_TOKEN&include=descriptions
+curl https://YOUR_DOMAIN.fakturownia.pl/invoices/INVOICE_ID.json?api_token=API_TOKEN
 ```
 
 Przykładowa odpowiedź (fragment):
