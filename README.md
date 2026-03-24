@@ -43,6 +43,7 @@ Działające przykłady wywołania API Fakturowni znajdują się też w w syste
     + [Zaczytanie cen produktów z cennika podczas wystawiania faktury](#f22)
     + [Pobranie faktury razem z połączonymi płatnościami](#f23)
     + [Odbiorcy/Wystawcy na fakturze](#f24)
+    + [Uwagi na fakturze (descriptions)](#f25)
 + [Link do podglądu faktury i pobieranie do PDF](#view_url)
 + [Przykłady użycia  - zakup szkolenia](#use_case1)
 + [Faktury - specyfikacja, rodzaje pól, kody GTU](#invoices)
@@ -990,6 +991,132 @@ Pola odbiorcy/wystawcy (recipient/issuer):
    "role_description": "Opis roli nie zdefiniowanej w KSeF" - max 25 znaków, należy podać tylko jeżeli w "role" wybrano "Rola inna" (używane tylko przy włączonym KSEF na koncie)
 ```
 
+<a name="f25"></a>
+
+## Uwagi na fakturze (descriptions)
+
+Uwagi (descriptions) to nowy model przechowywania dodatkowych opisów na fakturze, wprowadzony w związku z wymaganiami KSeF. Każda uwaga to osobny rekord z polami `kind` (rodzaj/nagłówek) i `content` (treść). Faktura może posiadać wiele uwag jednocześnie.
+
+> **Uwaga:** Funkcjonalność `descriptions` dostępna jest wyłącznie dla kont z polską wersją językową (locale: `pl`).
+
+> **Kompatybilność wsteczna:** Pole `description` (dotychczasowe uwagi) nadal działa. Przy wysłaniu `description` bez `descriptions` system automatycznie skonwertuje treść na nowy format (utworzy jeden rekord `descriptions` z przesłaną treścią). Pole `description` w odpowiedzi API zwraca zawartość pierwszej uwagi (`descriptions[0].content`).
+
+### Pobieranie uwag
+
+Aby pobrać uwagi przypisane do faktury, należy użyć parametru `include=descriptions`:
+
+```shell
+curl https://YOUR_DOMAIN.fakturownia.pl/invoices/INVOICE_ID.json?api_token=API_TOKEN&include=descriptions
+```
+
+Przykładowa odpowiedź (fragment):
+```json
+{
+    "id": 123,
+    "description": "Treść pierwszej uwagi",
+    "descriptions": [
+        {
+            "id": 1,
+            "kind": "Uwaga",
+            "content": "Treść pierwszej uwagi",
+            "position_index": null,
+            "row_number": 1
+        },
+        {
+            "id": 2,
+            "kind": "Informacja dodatkowa",
+            "content": "Treść drugiej uwagi",
+            "position_index": 1,
+            "row_number": 2
+        }
+    ]
+}
+```
+
+### Dodawanie uwag przy tworzeniu faktury
+
+```shell
+curl https://YOUR_DOMAIN.fakturownia.pl/invoices.json \
+    -X POST \
+    -H 'Accept: application/json' \
+    -H 'Content-Type: application/json' \
+    -d '{
+        "api_token": "API_TOKEN",
+        "invoice": {
+            "kind": "vat",
+            "seller_name": "Wystawca Sp. z o.o.",
+            "buyer_name": "Klient1 Sp. z o.o.",
+            "positions": [
+                {"name": "Produkt 1", "quantity": 1, "tax": 23, "total_price_gross": 123}
+            ],
+            "descriptions": [
+                {"kind": "Uwaga 1", "content": "Treść pierwszej uwagi", "position_index": 1},
+                {"kind": "Uwaga 2", "content": "Treść drugiej uwagi"}
+            ]
+        }
+    }'
+```
+
+### Aktualizacja uwag na fakturze
+
+Aby zaktualizować istniejącą uwagę, należy podać jej `id`. Aby dodać nową uwagę do istniejącej faktury, wystarczy nie podawać `id`:
+
+```shell
+curl https://YOUR_DOMAIN.fakturownia.pl/invoices/INVOICE_ID.json \
+    -X PUT \
+    -H 'Accept: application/json' \
+    -H 'Content-Type: application/json' \
+    -d '{
+        "api_token": "API_TOKEN",
+        "invoice": {
+            "descriptions": [
+                {"id": 1, "kind": "Zmieniony nagłówek", "content": "Zmieniona treść", "position_index": 1},
+                {"kind": "Nowa uwaga", "content": "Treść nowej uwagi"}
+            ]
+        }
+    }'
+```
+
+### Usuwanie uwag z faktury
+
+Aby usunąć uwagę, należy przekazać jej `id` z parametrem `_destroy: 1`:
+
+```shell
+curl https://YOUR_DOMAIN.fakturownia.pl/invoices/INVOICE_ID.json \
+    -X PUT \
+    -H 'Accept: application/json' \
+    -H 'Content-Type: application/json' \
+    -d '{
+        "api_token": "API_TOKEN",
+        "invoice": {
+            "descriptions": [
+                {"id": 1, "_destroy": 1}
+            ]
+        }
+    }'
+```
+
+> **Uwaga:** Wysłanie uwag z pustymi polami `kind` i `content` (bez `id`) spowoduje, że zostaną one zignorowane. Jeśli uwaga z podanym `id` ma puste `kind` i `content`, zostanie automatycznie usunięta.
+
+### Pola uwagi (description)
+
+```shell
+   "id": 1 - identyfikator uwagi (wymagany przy aktualizacji i usuwaniu)
+   "kind": "Uwaga" - rodzaj/nagłówek uwagi (string, max 256 znaków)
+   "content": "Treść uwagi" - treść uwagi (text, max 65535 znaków)
+   "position_index": 1 - opcjonalny numer pozycji faktury, której dotyczy uwaga (integer lub null)
+   "row_number": 1 - numer porządkowy uwagi, nadawany automatycznie (integer)
+   "_destroy": 1 - oznaczenie do usunięcia (tylko przy aktualizacji)
+```
+
+### Walidacje
+
+- Pola `kind` i `content` **nie mogą zawierać emoji** — wysłanie emoji spowoduje błąd walidacji.
+- Pole `kind` ma maksymalną długość **256 znaków**.
+- Białe znaki na początku i końcu pól `kind` oraz `content` są automatycznie usuwane (strip).
+- Jeśli nie podano wartości `kind`, zostanie ustawiona wartość domyślna `"Uwaga"`.
+- Maksymalna liczba uwag na jednej fakturze: **10 000**.
+
 <a name="view_url"></a>
 
 ## Link do podglądu faktury i pobieranie do PDF
@@ -1326,10 +1453,10 @@ Pole: `procedure_designations` - oznaczenia dotyczące procedur
 ```
 
 ## Faktury - kody GTU
-Więcej informacji o kodach GTU można znaleźć na naszej stronie pomocy: https://pomoc.fakturownia.pl/78131182-Kody-GTU-grupowanie-towarow-i-uslug  
+Więcej informacji o kodach GTU można znaleźć na naszej stronie pomocy: https://pomoc.fakturownia.pl/78131182-Kody-GTU-grupowanie-towarow-i-uslug
 Jeśli podczas tworzenia nowej faktury chcemy umieścic na niej kody GTU, możemy to zrobić na kilka sposobów.
 
-* `Automatyczne pobieranie kodów z produktów istniejących` - jeśli dodajemy pozycję na fakturze korzystając z ID produktu, które już ma zapisany kod GTU w systemie, wtedy nowa faktura automatycznie pobierze kody GTU wszystkich produktów i wyświetli je na wydruku (jeśli tylko jest włączona opcja zamieszczenia kodów na wydruku faktury)  
+* `Automatyczne pobieranie kodów z produktów istniejących` - jeśli dodajemy pozycję na fakturze korzystając z ID produktu, które już ma zapisany kod GTU w systemie, wtedy nowa faktura automatycznie pobierze kody GTU wszystkich produktów i wyświetli je na wydruku (jeśli tylko jest włączona opcja zamieszczenia kodów na wydruku faktury)
 
 * `Podanie kodów wraz z pozycjami na fakturze` - możemy podać kod GTU bezpośrednio dla każdej pozycji na fakturze korzystając z pola `gtu_code`
 
@@ -2296,7 +2423,7 @@ Aby dodać użytkownika do konta, musisz wysłać:
    - określenia parametru ```invite``` :
 	  - jeśli użytkownik musi zostać stworzony ("false"): oprócz przesłania adresu e-mail należy także wybrać hasło
 	  - jeśli użytkownik już istnieje i jest powiązany z kontem w Fakturowni ("true"): wymagany jest tylko jego adres e-mail
-   - rola użytkownika (```role```) 
+   - rola użytkownika (```role```)
 	  - dla jednej z domyślnych ról wybierz wartość: "member" dla zwykłego użytkownika, "admin" dla administratora lub "accountant" dla księgowego.
 	  - w przypadku niestandardowej roli wpisz wartość "role_1234" lub 1234, która reprezentuje niestandardowy identyfikator roli konta.
    - identyfikatory działu (```department_ids```), do których ma dostęp użytkownik nie będący administratorem.
