@@ -1229,6 +1229,17 @@ curl https://YOUR_DOMAIN.fakturownia.pl/invoices/INVOICE_ID.json \
 "_destroy": 1 - oznaczenie do usunięcia (tylko przy aktualizacji)
 ```
 
+### Walidacje
+
+- Pole `kind` jest wymagane — dozwolone wartości to `"charge"` (obciążenie) lub `"deduction"` (odliczenie).
+- Pole `amount` jest wymagane — wartość musi być większa od 0, maksymalnie **9 999 999.99**, z dokładnością do 2 miejsc po przecinku.
+- Pole `reason` jest wymagane — maksymalna długość **256 znaków**.
+- Maksymalna liczba pozycji: **100 per rodzaj** (100 obciążeń + 100 odliczeń).
+
+### Wykluczenia
+
+Rozliczenia **nie działają na fakturach zaliczkowych** (`kind: "advance"`). Przesłanie `settlement_positions` na fakturze zaliczkowej zostanie zignorowane.
+
 ### Wpływ na kwotę do zapłaty
 
 Obciążenia (`charge`) zwiększają kwotę do zapłaty, a odliczenia (`deduction`) ją zmniejszają:
