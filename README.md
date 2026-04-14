@@ -44,6 +44,7 @@ Działające przykłady wywołania API Fakturowni znajdują się też w w syste
     + [Pobranie faktury razem z połączonymi płatnościami](#f23)
     + [Odbiorcy/Wystawcy na fakturze](#f24)
     + [Uwagi na fakturze (descriptions)](#f25)
+    + [Rozliczenia na fakturze (settlement_positions)](#f26)
 + [Link do podglądu faktury i pobieranie do PDF](#view_url)
 + [Przykłady użycia  - zakup szkolenia](#use_case1)
 + [Faktury - specyfikacja, rodzaje pól, kody GTU](#invoices)
@@ -1114,6 +1115,138 @@ curl https://YOUR_DOMAIN.fakturownia.pl/invoices/INVOICE_ID.json \
 - Białe znaki na początku i końcu pól `kind` oraz `content` są automatycznie usuwane (strip).
 - Jeśli nie podano wartości `kind`, zostanie ustawiona wartość domyślna `"Uwaga"`.
 - Maksymalna liczba uwag na jednej fakturze: **10 000**.
+
+<a name="f26"></a>
+
+## Rozliczenia na fakturze (settlement_positions)
+
+Rozliczenia to mechanizm dodawania obciążeń i odliczeń na fakturze, wpływających na kwotę do zapłaty. Każda pozycja rozliczenia to osobny rekord z polami `kind` (rodzaj: `charge` lub `deduction`), `amount` (kwota) i `reason` (powód). Funkcja dostępna dla kont z włączonym ustawieniem "Używaj rozliczeń" (`use_settlements`).
+
+### Pobieranie rozliczeń
+
+Rozliczenia są automatycznie dołączane do odpowiedzi JSON faktury, gdy konto ma aktywne rozliczenia:
+
+```shell
+curl https://YOUR_DOMAIN.fakturownia.pl/invoices/INVOICE_ID.json?api_token=API_TOKEN
+```
+
+Przykładowa odpowiedź (fragment):
+```json
+{
+    "id": 123,
+    "settlement_positions": [
+        {
+            "id": 1,
+            "kind": "charge",
+            "amount": "100.0",
+            "reason": "Koszty transportu"
+        },
+        {
+            "id": 2,
+            "kind": "deduction",
+            "amount": "50.0",
+            "reason": "Rabat za wcześniejszą zapłatę"
+        }
+    ]
+}
+```
+
+> **Uwaga:** Klucz `settlement_positions` pojawia się w odpowiedzi JSON tylko dla faktur, które mają przypisane pozycje rozliczenia. Faktury bez rozliczeń nie zawierają tego klucza.
+
+### Dodawanie rozliczeń przy tworzeniu faktury
+
+Rozliczenia dodajemy przez pole `settlement_positions`, podając `kind` (`charge` dla obciążenia, `deduction` dla odliczenia):
+
+```shell
+curl https://YOUR_DOMAIN.fakturownia.pl/invoices.json \
+    -X POST \
+    -H 'Accept: application/json' \
+    -H 'Content-Type: application/json' \
+    -d '{
+        "api_token": "API_TOKEN",
+        "invoice": {
+            "kind": "vat",
+            "seller_name": "Wystawca Sp. z o.o.",
+            "buyer_name": "Klient1 Sp. z o.o.",
+            "positions": [
+                {"name": "Produkt 1", "quantity": 1, "tax": 23, "total_price_gross": 123}
+            ],
+            "settlement_positions": [
+                {"kind": "charge", "amount": "100.00", "reason": "Koszty transportu"},
+                {"kind": "charge", "amount": "50.00", "reason": "Opłata manipulacyjna"},
+                {"kind": "deduction", "amount": "30.00", "reason": "Rabat za wcześniejszą zapłatę"}
+            ]
+        }
+    }'
+```
+
+### Aktualizacja rozliczeń na fakturze
+
+Aby zaktualizować istniejące rozliczenie, należy podać jego `id`. Aby dodać nowe rozliczenie, wystarczy nie podawać `id`:
+
+```shell
+curl https://YOUR_DOMAIN.fakturownia.pl/invoices/INVOICE_ID.json \
+    -X PUT \
+    -H 'Accept: application/json' \
+    -H 'Content-Type: application/json' \
+    -d '{
+        "api_token": "API_TOKEN",
+        "invoice": {
+            "settlement_positions": [
+                {"id": 1, "amount": "150.00", "reason": "Zmienione koszty transportu"},
+                {"kind": "deduction", "amount": "25.00", "reason": "Nowe odliczenie"}
+            ]
+        }
+    }'
+```
+
+### Usuwanie rozliczeń z faktury
+
+Aby usunąć rozliczenie, należy przekazać jego `id` z parametrem `_destroy: 1`:
+
+```shell
+curl https://YOUR_DOMAIN.fakturownia.pl/invoices/INVOICE_ID.json \
+    -X PUT \
+    -H 'Accept: application/json' \
+    -H 'Content-Type: application/json' \
+    -d '{
+        "api_token": "API_TOKEN",
+        "invoice": {
+            "settlement_positions": [
+                {"id": 1, "_destroy": 1}
+            ]
+        }
+    }'
+```
+
+### Pola pozycji rozliczenia (settlement_position)
+
+```
+"id": 1 - identyfikator pozycji rozliczenia (wymagany przy aktualizacji i usuwaniu)
+"kind": "charge" - rodzaj: "charge" (obciążenie) lub "deduction" (odliczenie)
+"amount": "100.00" - kwota rozliczenia (decimal)
+"reason": "Powód" - powód/opis rozliczenia (string)
+"_destroy": 1 - oznaczenie do usunięcia (tylko przy aktualizacji)
+```
+
+### Walidacje
+
+- Pole `kind` jest wymagane — dozwolone wartości to `"charge"` (obciążenie) lub `"deduction"` (odliczenie).
+- Pole `amount` jest wymagane — wartość musi być większa od 0, maksymalnie **9 999 999.99**, z dokładnością do 2 miejsc po przecinku.
+- Pole `reason` jest wymagane — maksymalna długość **256 znaków**.
+- Maksymalna liczba pozycji: **100 per rodzaj** (100 obciążeń + 100 odliczeń).
+
+### Wykluczenia
+
+Rozliczenia **nie działają na fakturach zaliczkowych** (`kind: "advance"`). Przesłanie `settlement_positions` na fakturze zaliczkowej zostanie zignorowane.
+
+### Wpływ na kwotę do zapłaty
+
+Obciążenia (`charge`) zwiększają kwotę do zapłaty, a odliczenia (`deduction`) ją zmniejszają:
+
+```
+kwota_do_zapłaty = price_gross + suma_obciążeń - suma_odliczeń
+```
 
 <a name="view_url"></a>
 
