@@ -1120,7 +1120,7 @@ curl https://YOUR_DOMAIN.fakturownia.pl/invoices/INVOICE_ID.json \
 
 ## Rozliczenia na fakturze (settlement_positions)
 
-Rozliczenia KSeF to mechanizm dodawania obciążeń i odliczeń na fakturze, wpływających na kwotę do zapłaty. Każda pozycja rozliczenia to osobny rekord z polami `kind` (rodzaj: `charge` lub `deduction`), `amount` (kwota) i `reason` (powód). Funkcja dostępna wyłącznie dla kont polskich z włączonym ustawieniem "Używaj rozliczenia KSeF" (`use_settlements`) oraz aktywnym KSeF.
+Rozliczenia to mechanizm dodawania obciążeń i odliczeń na fakturze, wpływających na kwotę do zapłaty. Każda pozycja rozliczenia to osobny rekord z polami `kind` (rodzaj: `charge` lub `deduction`), `amount` (kwota) i `reason` (powód). Funkcja dostępna dla kont z włączonym ustawieniem "Używaj rozliczeń" (`use_settlements`).
 
 ### Pobieranie rozliczeń
 
