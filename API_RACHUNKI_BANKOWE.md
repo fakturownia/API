@@ -57,11 +57,15 @@ curl "https://twojaDomena.fakturownia.pl/invoices/462474440.json?api_token=API_T
   "bank_accounts": [
     {
       "id": 428554,
-      "name": "Rachunek główny",
-      "bank_name": "ING Bank Śląski",
-      "bank_account_number": "PL00000000000000000000000000",
+      "name": "Konto do cesji",
+      "bank_name": "PKO Bank Polski",
+      "bank_account_number": "PL61 1240 6436 1525 1964 1679 0405",
       "bank_currency": "PLN",
-      "bank_swift": null
+      "bank_swift": "BREXPLPWXXX",
+      "account_description": "Rachunek do rozliczeń z bankiem",
+      "own_bank_account": true,
+      "own_bank_account_type": "debt_assignment",
+      "factor_bank_account": false
     }
   ]
 }
@@ -72,11 +76,15 @@ curl "https://twojaDomena.fakturownia.pl/invoices/462474440.json?api_token=API_T
 | Pole | Typ | Opis |
 |------|-----|------|
 | `id` | integer | Identyfikator rachunku bankowego |
-| `name` | string \| null | Nazwa rachunku bankowego (np. „Rachunek główny PLN") |
-| `bank_name` | string | Nazwa banku |
+| `name` | string \| null | Notatka wewnętrzna rachunku (max 255 znaków). Nie jest widoczna na fakturze ani na wydruku PDF — służy tylko do identyfikacji rachunku w interfejsie. Nie musi być unikalna. |
+| `bank_name` | string | Nazwa banku (max 256 znaków) |
 | `bank_account_number` | string | Numer rachunku bankowego |
 | `bank_currency` | string | Waluta rachunku (np. `"PLN"`, `"EUR"`) |
 | `bank_swift` | string \| null | Kod SWIFT banku |
+| `account_description` | string \| null | Opis rachunku (max 256 znaków). Widoczny na fakturze dla kontrahenta. |
+| `own_bank_account` | boolean | Czy rachunek jest rachunkiem własnym banku/SKOKu (np. przy cesji wierzytelności, rachunkach wirtualnych) |
+| `own_bank_account_type` | string \| null | Typ rachunku własnego banku. Dopuszczalne wartości: `"debt_assignment"`, `"debt_collection"`, `"bank_own_business"`, `null`. Pełne znaczenia — patrz [sekcja 9 FAQ](#9-faq). |
+| `factor_bank_account` | boolean | Czy rachunek należy do faktora (faktoring klasyczny) |
 
 ---
 
@@ -122,9 +130,14 @@ curl -X POST "https://twojaDomena.fakturownia.pl/invoices.json" \
 | Pole | Wymagane | Domyślna wartość | Opis |
 |------|----------|------------------|------|
 | `bank_account_number` | **TAK** | - | Numer rachunku bankowego |
-| `bank_name` | NIE | `"Rachunek bankowy"` | Nazwa banku |
+| `bank_name` | NIE | `"Rachunek bankowy"` | Nazwa banku (max 256 znaków) |
 | `bank_currency` | NIE | Waluta działu | Waluta rachunku |
 | `bank_swift` | NIE | `null` | Kod SWIFT banku |
+| `name` | NIE | `null` | Notatka wewnętrzna (max 255 znaków). Nie musi być unikalna. |
+| `account_description` | NIE | `null` | Opis rachunku widoczny na fakturze (max 256 znaków). |
+| `own_bank_account` | NIE | `false` | Czy rachunek własny banku/SKOKu. |
+| `own_bank_account_type` | NIE | `null` | Typ rachunku własnego banku. Ma znaczenie gdy `own_bank_account: true`. Wartości: `debt_assignment` / `debt_collection` / `bank_own_business`. |
+| `factor_bank_account` | NIE | `false` | Czy rachunek faktora. |
 
 ---
 
@@ -165,11 +178,15 @@ Wynik:  faktura ma TYLKO rachunek PL77...
   "bank_accounts": [
     {
       "id": 428549,
-      "name": null,
-      "bank_name": "Test Bank",
-      "bank_account_number": "PL61 1090 1014 0000 0712 1981 2874",
-      "bank_currency": "EUR",
-      "bank_swift": "NEWSWIFT"
+      "name": "Konto faktora Pekao",
+      "bank_name": "ING Bank Śląski",
+      "bank_account_number": "PL88 1050 0099 7692 6257 7666",
+      "bank_currency": "PLN",
+      "bank_swift": "INGBPLPW",
+      "account_description": "Rachunek faktora do przelewów",
+      "own_bank_account": false,
+      "own_bank_account_type": null,
+      "factor_bank_account": true
     }
   ],
   "positions": [...]
@@ -187,11 +204,15 @@ Wynik:  faktura ma TYLKO rachunek PL77...
 | Pole | Typ | Opis |
 |------|-----|------|
 | `id` | integer | Identyfikator rachunku bankowego |
-| `name` | string \| null | Nazwa rachunku bankowego |
-| `bank_name` | string \| null | Nazwa banku |
+| `name` | string \| null | Notatka wewnętrzna rachunku (max 255 znaków). Nie jest widoczna na fakturze ani na wydruku PDF — służy tylko do identyfikacji rachunku w interfejsie. Nie musi być unikalna. |
+| `bank_name` | string \| null | Nazwa banku (max 256 znaków) |
 | `bank_account_number` | string | Numer rachunku w oryginalnym formacie |
 | `bank_currency` | string | Waluta rachunku (np. `"PLN"`, `"EUR"`) |
 | `bank_swift` | string \| null | Kod SWIFT banku |
+| `account_description` | string \| null | Opis rachunku (max 256 znaków). Widoczny na fakturze dla kontrahenta. |
+| `own_bank_account` | boolean | Czy rachunek jest rachunkiem własnym banku/SKOKu (np. przy cesji wierzytelności, rachunkach wirtualnych) |
+| `own_bank_account_type` | string \| null | Typ rachunku własnego banku. Dopuszczalne wartości: `"debt_assignment"`, `"debt_collection"`, `"bank_own_business"`, `null`. Pełne znaczenia — patrz [sekcja 9 FAQ](#9-faq). |
+| `factor_bank_account` | boolean | Czy rachunek należy do faktora (faktoring klasyczny) |
 | `bank_account_id` | integer | Identyfikator rachunku (zawsze równy `id`) |
 | `bank_account_version_departments` | array | Powiązania z działami (patrz opis poniżej) |
 
@@ -211,11 +232,15 @@ curl -X POST "https://twojaDomena.fakturownia.pl/bank_accounts.json" \
   -d '{
     "api_token": "API_TOKEN",
     "bank_account": {
-      "name": "Rachunek główny PLN",
+      "name": "Konto do cesji",
       "bank_account_number": "PL61 1090 1014 0000 0712 1981 2874",
       "bank_name": "Santander Bank Polska",
       "bank_currency": "PLN",
-      "bank_swift": "WBKPPLPP"
+      "bank_swift": "WBKPPLPP",
+      "account_description": "Rachunek do rozliczeń z bankiem",
+      "own_bank_account": true,
+      "own_bank_account_type": "debt_assignment",
+      "factor_bank_account": false
     }
   }'
 ```
@@ -224,11 +249,15 @@ curl -X POST "https://twojaDomena.fakturownia.pl/bank_accounts.json" \
 
 | Pole | Wymagane | Opis |
 |------|----------|------|
-| `name` | **TAK** | Nazwa rachunku (wyświetlana w systemie) |
 | `bank_account_number` | **TAK** | Numer rachunku bankowego |
-| `bank_name` | NIE | Nazwa banku |
+| `name` | NIE | Notatka wewnętrzna (max 255 znaków). Może być pusta, nie musi być unikalna. |
+| `bank_name` | NIE | Nazwa banku (max 256 znaków) |
 | `bank_currency` | NIE | Waluta rachunku |
 | `bank_swift` | NIE | Kod SWIFT banku |
+| `account_description` | NIE | Opis rachunku widoczny na fakturze (max 256 znaków). |
+| `own_bank_account` | NIE | Czy rachunek własny banku/SKOKu (domyślnie `false`). |
+| `own_bank_account_type` | NIE | Typ rachunku własnego banku. Ma znaczenie gdy `own_bank_account: true`. Wartości: `debt_assignment` / `debt_collection` / `bank_own_business`. |
+| `factor_bank_account` | NIE | Czy rachunek faktora (domyślnie `false`). |
 
 #### Powiązanie z działem (opcjonalne)
 
@@ -263,11 +292,15 @@ Aby rachunek automatycznie pojawiał się na fakturach z danego działu, dodaj `
 ```json
 {
   "id": 1,
-  "name": "Rachunek główny PLN",
+  "name": "Konto do cesji",
   "bank_name": "Santander Bank Polska",
   "bank_account_number": "PL61 1090 1014 0000 0712 1981 2874",
   "bank_currency": "PLN",
   "bank_swift": "WBKPPLPP",
+  "account_description": "Rachunek do rozliczeń z bankiem",
+  "own_bank_account": true,
+  "own_bank_account_type": "debt_assignment",
+  "factor_bank_account": false,
   "bank_account_id": 1,
   "bank_account_version_departments": [
     {
@@ -302,11 +335,15 @@ Format odpowiedzi jest identyczny jak w `POST` (tworzenie), `PUT` (aktualizacja)
 ```json
 {
   "id": 1,
-  "name": "Rachunek główny PLN",
-  "bank_name": "Santander Bank Polska",
-  "bank_account_number": "PL61 1090 1014 0000 0712 1981 2874",
+  "name": "Konto faktora Pekao",
+  "bank_name": "ING Bank Śląski",
+  "bank_account_number": "PL88 1050 0099 7692 6257 7666",
   "bank_currency": "PLN",
-  "bank_swift": "WBKPPLPP",
+  "bank_swift": "INGBPLPW",
+  "account_description": "Rachunek faktora do przelewów",
+  "own_bank_account": false,
+  "own_bank_account_type": null,
+  "factor_bank_account": true,
   "bank_account_id": 1,
   "bank_account_version_departments": [
     {
@@ -350,11 +387,15 @@ Zwraca zaktualizowany obiekt rachunku. Format odpowiedzi jest identyczny jak w `
 ```json
 {
   "id": 1,
-  "name": "Zaktualizowany rachunek",
+  "name": "Zaktualizowana notatka",
   "bank_name": "Nowa nazwa banku",
   "bank_account_number": "PL61 1090 1014 0000 0712 1981 2874",
   "bank_currency": "PLN",
   "bank_swift": "WBKPPLPP",
+  "account_description": null,
+  "own_bank_account": false,
+  "own_bank_account_type": null,
+  "factor_bank_account": false,
   "bank_account_id": 1,
   "bank_account_version_departments": []
 }
@@ -405,6 +446,10 @@ Tablica obiektów rachunków bankowych. Każdy obiekt ma ten sam format co w ope
     "bank_account_number": "00000000000000000000000001",
     "bank_currency": "PLN",
     "bank_swift": "Switft",
+    "account_description": null,
+    "own_bank_account": false,
+    "own_bank_account_type": null,
+    "factor_bank_account": false,
     "bank_account_id": 1,
     "bank_account_version_departments": [
       {
@@ -614,12 +659,37 @@ Niezależnie od poziomu zabezpieczeń, faktura zawsze otrzymuje domyślne rachun
 | Kod | Sytuacja | Przykład odpowiedzi |
 |-----|----------|---------------------|
 | `422` | Brak `bank_account_number` w atrybutach | `{"code": "error", "message": {"bank_accounts": ["can't be blank"]}}` |
+| `422` | `name` dłuższe niż 255 znaków | `{"code": "error", "message": {"name": ["is too long (maximum is 255 characters)"]}}` |
+| `422` | `account_description` dłuższe niż 256 znaków | `{"code": "error", "message": {"account_description": ["is too long (maximum is 256 characters)"]}}` |
+| `422` | Nieprawidłowa wartość `own_bank_account_type` | `{"code": "error", "message": {"own_bank_account_type": ["is not included in the list"]}}` |
 | `422` | Próba ustawienia `buyer_mass_payment_code` przy `security != none` dla klienta bez kodu | `422 Unprocessable Entity` |
 | `404` | Rachunek bankowy nie istnieje (CRUD) | `{"code": "error", "message": "Not found"}` |
 
 ---
 
 ## 9. FAQ
+
+### Jaka jest różnica między `name` a `account_description`?
+
+- `name` — **notatka wewnętrzna** rachunku. Widoczna tylko w interfejsie Fakturowni, pomaga odróżnić rachunki prowadzone w tym samym banku (np. „Konto do opłat wewnętrznych" vs „Konto dla klientów"). **Nie trafia na wydruk faktury** i nie jest przekazywana kontrahentowi. Może być pusta, nie musi być unikalna (max 255 znaków).
+- `account_description` — **opis rachunku**, **widoczny na wydruku faktury** dla kontrahenta (max 256 znaków).
+
+### Jak oznaczyć rachunek faktora w API?
+
+Ustaw `factor_bank_account: true` na rachunku bankowym. Dotyczy sytuacji, gdy płatność za fakturę ma trafić na rachunek banku/faktora (faktoring klasyczny), a nie bezpośrednio do sprzedawcy.
+
+Rachunek faktora **może** mieć jednocześnie `own_bank_account: true` wraz z ustawionym `own_bank_account_type` — wtedy rachunek jest zarówno rachunkiem faktora, jak i rachunkiem własnym banku (np. rachunek do cesji w banku finansującym).
+
+### Jakie są dopuszczalne wartości `own_bank_account_type`?
+
+Pole przyjmuje wartość jednej z trzech kategorii lub `null`. Ma znaczenie, gdy `own_bank_account: true` — oznacza wtedy rachunek banku lub SKOK, na który nabywca ma wpłacać należność:
+
+| Wartość API | Znaczenie |
+|-------------|-----------|
+| `debt_assignment` | Rachunek banku lub SKOK służący do dokonywania rozliczeń z tytułu nabywanych przez ten bank lub tę kasę wierzytelności pieniężnych |
+| `debt_collection` | Rachunek banku lub SKOK wykorzystywany przez ten bank lub tę kasę do pobierania należności od nabywcy towarów lub usług za dostawę towarów lub świadczenie usług, potwierdzone fakturą, i przekazania jej w całości albo części dostawcy towarów lub usługodawcy |
+| `bank_own_business` | Rachunek banku lub SKOK prowadzony przez ten bank lub tę kasę w ramach gospodarki własnej, niebędący rachunkiem rozliczeniowym |
+| `null` | Rachunek nie jest rachunkiem własnym banku |
 
 ### Dlaczego skopiowana faktura ma inne rachunki niż źródłowa?
 
