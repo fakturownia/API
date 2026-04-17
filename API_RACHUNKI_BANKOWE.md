@@ -57,14 +57,14 @@ curl "https://twojaDomena.fakturownia.pl/invoices/462474440.json?api_token=API_T
   "bank_accounts": [
     {
       "id": 428554,
-      "name": "Konto do cesji",
-      "bank_name": "PKO Bank Polski",
-      "bank_account_number": "PL61 1240 6436 1525 1964 1679 0405",
+      "name": "Rachunek główny",
+      "bank_name": "ING Bank Śląski",
+      "bank_account_number": "PL00000000000000000000000000",
       "bank_currency": "PLN",
-      "bank_swift": "BREXPLPWXXX",
-      "account_description": "Rachunek do rozliczeń z bankiem",
-      "own_bank_account": true,
-      "own_bank_account_type": "debt_assignment",
+      "bank_swift": null,
+      "account_description": null,
+      "own_bank_account": false,
+      "own_bank_account_type": null,
       "factor_bank_account": false
     }
   ]
@@ -178,15 +178,15 @@ Wynik:  faktura ma TYLKO rachunek PL77...
   "bank_accounts": [
     {
       "id": 428549,
-      "name": "Konto faktora Pekao",
-      "bank_name": "ING Bank Śląski",
-      "bank_account_number": "PL88 1050 0099 7692 6257 7666",
-      "bank_currency": "PLN",
-      "bank_swift": "INGBPLPW",
-      "account_description": "Rachunek faktora do przelewów",
+      "name": null,
+      "bank_name": "Test Bank",
+      "bank_account_number": "PL61 1090 1014 0000 0712 1981 2874",
+      "bank_currency": "EUR",
+      "bank_swift": "NEWSWIFT",
+      "account_description": null,
       "own_bank_account": false,
       "own_bank_account_type": null,
-      "factor_bank_account": true
+      "factor_bank_account": false
     }
   ],
   "positions": [...]
@@ -232,15 +232,11 @@ curl -X POST "https://twojaDomena.fakturownia.pl/bank_accounts.json" \
   -d '{
     "api_token": "API_TOKEN",
     "bank_account": {
-      "name": "Konto do cesji",
+      "name": "Rachunek główny PLN",
       "bank_account_number": "PL61 1090 1014 0000 0712 1981 2874",
       "bank_name": "Santander Bank Polska",
       "bank_currency": "PLN",
-      "bank_swift": "WBKPPLPP",
-      "account_description": "Rachunek do rozliczeń z bankiem",
-      "own_bank_account": true,
-      "own_bank_account_type": "debt_assignment",
-      "factor_bank_account": false
+      "bank_swift": "WBKPPLPP"
     }
   }'
 ```
@@ -292,14 +288,14 @@ Aby rachunek automatycznie pojawiał się na fakturach z danego działu, dodaj `
 ```json
 {
   "id": 1,
-  "name": "Konto do cesji",
+  "name": "Rachunek główny PLN",
   "bank_name": "Santander Bank Polska",
   "bank_account_number": "PL61 1090 1014 0000 0712 1981 2874",
   "bank_currency": "PLN",
   "bank_swift": "WBKPPLPP",
-  "account_description": "Rachunek do rozliczeń z bankiem",
-  "own_bank_account": true,
-  "own_bank_account_type": "debt_assignment",
+  "account_description": null,
+  "own_bank_account": false,
+  "own_bank_account_type": null,
   "factor_bank_account": false,
   "bank_account_id": 1,
   "bank_account_version_departments": [
@@ -335,15 +331,15 @@ Format odpowiedzi jest identyczny jak w `POST` (tworzenie), `PUT` (aktualizacja)
 ```json
 {
   "id": 1,
-  "name": "Konto faktora Pekao",
-  "bank_name": "ING Bank Śląski",
-  "bank_account_number": "PL88 1050 0099 7692 6257 7666",
+  "name": "Rachunek główny PLN",
+  "bank_name": "Santander Bank Polska",
+  "bank_account_number": "PL61 1090 1014 0000 0712 1981 2874",
   "bank_currency": "PLN",
-  "bank_swift": "INGBPLPW",
-  "account_description": "Rachunek faktora do przelewów",
+  "bank_swift": "WBKPPLPP",
+  "account_description": null,
   "own_bank_account": false,
   "own_bank_account_type": null,
-  "factor_bank_account": true,
+  "factor_bank_account": false,
   "bank_account_id": 1,
   "bank_account_version_departments": [
     {
@@ -387,7 +383,7 @@ Zwraca zaktualizowany obiekt rachunku. Format odpowiedzi jest identyczny jak w `
 ```json
 {
   "id": 1,
-  "name": "Zaktualizowana notatka",
+  "name": "Zaktualizowany rachunek",
   "bank_name": "Nowa nazwa banku",
   "bank_account_number": "PL61 1090 1014 0000 0712 1981 2874",
   "bank_currency": "PLN",
