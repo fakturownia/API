@@ -1116,6 +1116,8 @@ curl https://YOUR_DOMAIN.fakturownia.pl/invoices/INVOICE_ID.json \
 - Jeśli nie podano wartości `kind`, zostanie ustawiona wartość domyślna `"Uwaga"`.
 - Maksymalna liczba uwag na jednej fakturze: **10 000**.
 
+> **KSeF:** Przy wysyłce do KSeF pole `content` jest dodatkowo ograniczone do **256 znaków** (wymóg schemy — element `DodatkowyOpis.Wartość`). Dla kont bez aktywnego KSeF limit pozostaje na poziomie 65535 znaków. Szczegóły i pełna lista ograniczeń długości pól KSeF: [KSeF.md — Ograniczenia długości pól](KSeF.md#ograniczenia-długości-pól).
+
 <a name="f26"></a>
 
 ## Rozliczenia na fakturze (settlement_positions)
