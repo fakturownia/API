@@ -279,7 +279,8 @@ KSeF narzuca limity na długość niektórych pól:
 | Pole | Maksymalna długość | Nowe ograniczenie |
 |------|-------------------|------------|
 | Nazwa pozycji (`positions[].name`) | 256 znaków | Tak |
-| Opis/stopka faktury (`description`) | 3500 znaków | Tak |
+| Rodzaj uwagi (`descriptions[].kind`) | 256 znaków | Tak |
+| Treść uwagi (`descriptions[].content`) | 256 znaków | Tak |
 | Email (`buyer_email`, `seller_email`) | 255 znaków | Tak (format) |
 | Telefon (`buyer_phone`, `seller_phone`) | 16 znaków | Tak |
 | Powód korekty (`correction_reason`) na korekcie| 256 znaków | Tak |
@@ -288,7 +289,9 @@ KSeF narzuca limity na długość niektórych pól:
 | GTIN (pole `additional_info` gdy `additional_info_desc=GTIN`) | 20 znaków | Tak |
 | PKWiU/PKOB/CN (pole `additional_info`) | 50 znaków | Tak |
 
-**Ważne:** Jeśli Twoja integracja generuje długie opisy pozycji lub stopki faktur, musisz je skrócić.
+**Ważne:** Jeśli Twoja integracja generuje długie opisy pozycji, musisz je skrócić.
+
+**Uwagi do faktury (`descriptions`):** Pola `kind` i `content` w nowym modelu uwag (zob. [Uwagi na fakturze](README.md#f25) w README) są ograniczone przez schemę KSeF do **256 znaków** każde — odpowiadają elementowi `DodatkowyOpis` (`Klucz` i `Wartość`). Stare pole `description` jest nadal akceptowane po API, ale przy wysyłce do KSeF zostaje automatycznie skonwertowane na pojedynczy wpis `descriptions` i w tym momencie zaczyna go obowiązywać ten sam limit 256 znaków. Dla kont bez aktywnego KSeF pole `descriptions[].content` dopuszcza dalej do 65535 znaków (limit Fakturowni).
 
 
 ### Typy faktur wysyłane do KSeF
