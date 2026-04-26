@@ -27,6 +27,7 @@ Działające przykłady wywołania API Fakturowni znajdują się też w w syste
 	+ [Aktualizacja pozycji na fakturze](#f10b)
 	+ [Usunięcie pozycji na fakturze](#f10c)
 	+ [Dodanie pozycji na fakturze](#f10d)
+	+ [Dodanie pozycji na fakturze marża](#f10e)
 	+ [Zmiana statusu faktury](#f11)
 	+ [Pobranie listy definicji faktur cyklicznych](#f12)
 	+ [Dodanie definicji faktury cyklicznej](#f13)
@@ -605,6 +606,103 @@ curl https://YOUR_DOMAIN.fakturownia.pl/invoices/111.json \
         "api_token": "API_TOKEN",
         "invoice": {
             "positions": [{"name":"Produkt A1", "tax":23, "total_price_gross":10.23, "quantity":1}]
+        }
+    }'
+```
+
+<a name="f10e"></a>
+Dodanie pozycji na fakturze marża.
+
+Faktura VAT marża (`kind: "vat_margin"`) może zawierać mieszane pozycje - zwykłe (ze standardową stawką VAT) oraz marżowe (z tax: `"disabled"`). Dotyczy to np. biur podróży, które na jednej fakturze wykazują usługi turystyczne (marża) i usługi własne (zwykły VAT). Pola marżowe wymagają dodatkowych pól na poziomie pozycji.
+
+<b>Pola pozycji marżowej (tax: "disabled"):</b>
+
+| Pole | Wymagane | Opis |
+|------|----------|------|
+| `tax` | tak | Musi być `"disabled"` dla pozycji marżowej |
+| `total_purchase_price` | tak | Cena zakupu (kwota nabycia) |
+| `vat_margin_tax` | tak | Stawka VAT od marży (np. `"23"`, `"8"`) |
+| `name`, `quantity`, `total_price_gross` | tak | Standardowe pola pozycji |
+| `vat_margin_total_price_net` | nie | Kwota netto marży (wyliczana automatycznie) |
+| `vat_margin_total_price_tax` | nie | Kwota podatku od marży (wyliczana automatycznie) |
+| `vat_margin_total_price_gross` | nie | Kwota brutto marży (wyliczana automatycznie) |
+
+Przykład - faktura marża z pozycjami marżowymi:
+
+```shell
+curl https://YOUR_DOMAIN.fakturownia.pl/invoices.json \
+    -H 'Accept: application/json' \
+    -H 'Content-Type: application/json' \
+    -d '{
+        "api_token": "API_TOKEN",
+        "invoice": {
+            "kind": "vat_margin",
+            "number": null,
+            "sell_date": "2025-01-16",
+            "issue_date": "2025-01-16",
+            "payment_to": "2025-01-23",
+            "seller_name": "Biuro Podróży Sp. z o.o.",
+            "seller_tax_no": "6272616681",
+            "buyer_name": "Klient Sp. z o.o.",
+            "buyer_tax_no": "5272616681",
+            "procedure_vat_margin": "procedura marży dla biur podróży",
+            "positions": [
+                {
+                    "name": "Wycieczka Grecja",
+                    "tax": "disabled",
+                    "quantity": 1,
+                    "total_price_gross": 5000.00,
+                    "total_purchase_price": 4200.00,
+                    "vat_margin_tax": "23"
+                },
+                {
+                    "name": "Wycieczka Włochy",
+                    "tax": "disabled",
+                    "quantity": 1,
+                    "total_price_gross": 3500.00,
+                    "total_purchase_price": 3100.00,
+                    "vat_margin_tax": "23"
+                }
+            ]
+        }
+    }'
+```
+
+Przykład - faktura marża z pozycjami mieszanymi:
+
+```shell
+curl https://YOUR_DOMAIN.fakturownia.pl/invoices.json \
+    -H 'Accept: application/json' \
+    -H 'Content-Type: application/json' \
+    -d '{
+        "api_token": "API_TOKEN",
+        "invoice": {
+            "kind": "vat_margin",
+            "number": null,
+            "sell_date": "2025-01-16",
+            "issue_date": "2025-01-16",
+            "payment_to": "2025-01-23",
+            "seller_name": "Biuro Podróży Sp. z o.o.",
+            "seller_tax_no": "6272616681",
+            "buyer_name": "Klient Sp. z o.o.",
+            "buyer_tax_no": "5272616681",
+            "procedure_vat_margin": "procedura marży dla biur podróży",
+            "positions": [
+                {
+                    "name": "Wycieczka Grecja (usługa turystyczna)",
+                    "tax": "disabled",
+                    "quantity": 1,
+                    "total_price_gross": 5000.00,
+                    "total_purchase_price": 4200.00,
+                    "vat_margin_tax": "23"
+                },
+                {
+                    "name": "Transfer lotniskowy (usługa własna)",
+                    "tax": "23",
+                    "quantity": 1,
+                    "total_price_gross": 246.00
+                }
+            ]
         }
     }'
 ```
