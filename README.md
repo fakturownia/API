@@ -943,6 +943,8 @@ curl https://twojaDomena.fakturownia.pl/invoices/INVOICE_ID.json?api_token=API_T
 
 Do faktury można dodać domyśle uwagi z ustawień konta korzystając z parametru: `fill_default_descriptions`:
 
+> **Limit znaków (locale PL):** pola `account.invoice_description` i `department.invoice_description` (ustawiane przez `POST/PUT /account.json` i `POST/PUT /departments.json`) są ograniczone do **256 znaków** dla kont z locale PL — odpowiadają limitowi `Invoice.description` w schemie KSeF (zob. [KSeF.md — Ograniczenia długości pól](KSeF.md#ograniczenia-długości-pól)). Próba zapisania dłuższej wartości zwróci `422 Unprocessable Entity` z błędem `is too long (maximum is 256 characters)`.
+
 ```shell
 curl https://YOUR_DOMAIN.fakturownia.pl/invoices.json \
     -X POST \
