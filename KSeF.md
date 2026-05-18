@@ -284,6 +284,8 @@ KSeF narzuca limity na długość niektórych pól:
 | Email (`buyer_email`, `seller_email`) | 255 znaków | Tak (format) |
 | Telefon (`buyer_phone`, `seller_phone`) | 16 znaków | Tak |
 | Powód korekty (`correction_reason`) na korekcie| 256 znaków | Tak |
+| Domyślne uwagi konta (`account.invoice_description`) | 256 znaków | Tak (locale PL) |
+| Domyślne uwagi działu (`department.invoice_description`) | 256 znaków | Tak (locale PL) |
 | Nazwa (`seller_name`, `buyer_name`) | 255 znaków (Fakturownia) | Nie |
 | Adres (`seller_street`, `buyer_street`) | 255 znaków (Fakturownia) | Nie |
 | GTIN (pole `additional_info` gdy `additional_info_desc=GTIN`) | 20 znaków | Tak |
