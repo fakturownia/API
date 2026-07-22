@@ -534,6 +534,24 @@ Przykład: `5252445767-20260201-ABC123DEF456`
 
 Ten numer jest oficjalnym potwierdzeniem przyjęcia faktury przez KSeF.
 
+#### Wyszukiwanie faktury po numerze KSeF
+
+Listę faktur można przefiltrować po numerze KSeF parametrem `gov_id`:
+
+```
+GET /invoices.json?gov_id=5252445767-20260201-ABC123DEF456&api_token=TWOJ_TOKEN
+```
+
+Zwraca faktury o dokładnie tym `gov_id`. Domyślnie przeszukiwane są faktury
+przychodowe — aby znaleźć wydatek (fakturę kosztową) z tym numerem KSeF, dodaj
+`income=no`:
+
+```
+GET /invoices.json?gov_id=5252445767-20260201-ABC123DEF456&income=no&api_token=TWOJ_TOKEN
+```
+
+Filtr działa tylko dla numerów KSeF nadanych w regionie konta (Polska — KSeF).
+
 ### Link weryfikacyjny (`gov_verification_link`)
 
 Link do weryfikacji faktury w portalu KSeF. Używany do generowania kodu QR na wydruku faktury.
