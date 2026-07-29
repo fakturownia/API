@@ -10,6 +10,7 @@ Działające przykłady wywołania API Fakturowni znajdują się też w w syste
 ## Spis treści
 + [API Token](#token)
 + [Dodatkowe parametry dostępne przy pobieraniu listy rekordów](#list_params)
++ [Wybór zwracanych pól](#fields_params)
 + [Faktury - przykłady wywołania](#examples)
 	+ [Pobranie listy faktur z aktualnego miesiąca](#f1)
 	+ [Pobranie listy faktur wraz z ich pozycjami](#f2)
@@ -197,6 +198,23 @@ Parametr `order=` pozwala wybrać wartość, według której będzie ustalona ko
 ```
 
 Można dodać do parametru `.desc` aby zmienić kolejność sortowania na malejącą np. `updated_at.desc`.
+
+<a name="fields_params"></a>
+## Wybór zwracanych pól
+
+Pobierając fakturę (`GET /invoices/ID_FAKTURY.json`) można ograniczyć odpowiedź do wybranych pól parametrem `fields[invoice]=` z listą nazw rozdzieloną przecinkami:
+
+https://YOUR_DOMAIN.fakturownia.pl/invoices/ID_FAKTURY.json?api_token=API_TOKEN&fields[invoice]=number,price_gross,gov_status,gov_id
+
+Odpowiedź zawiera wyłącznie wymienione pola. Nazwa, której faktura nie udostępnia, jest pomijana bez zgłaszania błędu. Parametr działa niezależnie od `api_version`.
+
+Użycie `fields[invoice]=` wyłącza domyślny zestaw zwracanych danych, w tym pozycje (`positions`), odbiorców (`recipients`), wystawców (`issuers`) i uwagi (`descriptions`). Aby dostać którąś z tych asocjacji razem z wybranymi polami, wymień ją jawnie w `include=`:
+
+https://YOUR_DOMAIN.fakturownia.pl/invoices/ID_FAKTURY.json?api_token=API_TOKEN&fields[invoice]=number,price_gross&include=positions
+
+Parametry sterujące zawartością asocjacji działają dalej razem z `fields[invoice]=`. Przykładowo `correction_positions=full` dokłada do pozycji korekty pola `correction_before` i `correction_after`, o ile pozycje zostały poproszone przez `include=positions`.
+
+Gdy zamiast zawężania odpowiedzi chcesz tylko dodać pole do domyślnego zestawu, użyj `additional_fields[invoice]=` (np. `cancel_reason`, `connected_payments`, `corrected_content_before`). Samo `additional_fields[invoice]=` nie zawęża odpowiedzi - zwracany jest domyślny zestaw powiększony o wskazane pola. Oba parametry można łączyć, wtedy `additional_fields` uzupełnia listę pól z `fields`.
 
 <a name="examples"></a>
 ## Przykłady wywołania

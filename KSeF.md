@@ -471,6 +471,8 @@ Pobierając fakturę przez API, otrzymujesz pola związane z KSeF:
 GET /invoices/{ID}.json?fields[invoice]=gov_status,gov_id,gov_send_date,gov_sell_date,gov_error_messages,gov_verification_link,gov_link,gov_corrected_invoice_number&api_token=TWOJ_TOKEN
 ```
 
+`fields[invoice]` zawęża odpowiedź wyłącznie do wymienionych pól - pozycje i pozostałe asocjacje trzeba wtedy poprosić jawnie przez `include` (szczegóły: [Wybór zwracanych pól](README.md#fields_params)).
+
 Przykładowa odpowiedź dla faktury wysłanej do KSeF:
 ```json
 {
