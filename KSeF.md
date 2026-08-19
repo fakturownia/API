@@ -530,20 +530,17 @@ Przykładowa odpowiedź dla faktury wysłanej do KSeF:
 | `processing` | W trakcie wysyłki |
 | `send_error` | Błąd wysyłki - sprawdź `gov_error_messages` |
 | `server_error` | Błąd serwera KSeF - spróbuj ponownie później |
+| `status_check_error` | Błąd sprawdzania statusu w KSeF (faktura mogła już zostać przyjęta) |
+| `offline` | Wystawiona w trybie offline (offline24 / awaria) - oczekuje na przekazanie do KSeF |
+| `offline_error` | Błąd obsługi faktury wystawionej w trybie offline |
+| `duplicate_error` | Duplikat - faktura o tym numerze jest już w KSeF |
+| `blocked_403_error` | Brak uprawnień do wysyłki faktur do KSeF (błąd 403) |
 | `not_applicable` | Faktura nie kwalifikuje się do KSeF (np. proforma) |
 | `not_connected` | KSeF nie jest połączony z kontem (brak autoryzacji) |
 | `null` | Nie wysłano do KSeF |
 
 **Statusy w trybie demo:**
-
-| Status | Opis |
-|--------|------|
-| `demo_ok` | Wysłana pomyślnie (tryb demo) |
-| `demo_processing` | W trakcie wysyłki (tryb demo) |
-| `demo_send_error` | Błąd wysyłki (tryb demo) |
-| `demo_server_error` | Błąd serwera (tryb demo) |
-| `demo_not_applicable` | Nie kwalifikuje się (tryb demo) |
-| `demo_not_connected` | KSeF nie jest połączony (tryb demo) |
+W trybie demo (testowa wysyłka do KSeF) występują te same statusy co produkcyjne, z przedrostkiem `demo_` - np. `demo_ok`, `demo_processing`, `demo_send_error`, `demo_offline`, `demo_duplicate_error`. Wyjątkiem jest `null`, który nie ma odpowiednika demo.
 
 ### Opis wszystkich pól KSeF
 
