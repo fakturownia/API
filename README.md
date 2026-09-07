@@ -50,6 +50,7 @@ Działające przykłady wywołania API Fakturowni znajdują się też w w syste
 + [Link do podglądu faktury i pobieranie do PDF](#view_url)
 + [Przykłady użycia  - zakup szkolenia](#use_case1)
 + [Faktury - specyfikacja, rodzaje pól, kody GTU](#invoices)
++ [Faktury - warunkowy termin płatności (TerminOpis)](#payment_to_description)
 + [Klienci](#clients)
 	+ [Lista klientów](#k1)
 	+ [Wyszukiwanie klientów po nazwie, mailu, nazwie skróconej lub numerze NIP](#k1b)
@@ -1681,8 +1682,9 @@ Pola faktury
 "additional_info_desc" : "PKWiU" - nazwa dodatkowej kolumny na pozycjach faktury
 "show_discount" : "0" - czy rabat
 "payment_type" : "transfer",
-"payment_to_kind" : pozwala określić termin płatności. Można tu podać liczbę np.: 5, wówczas mamy 5-dniowy termin płatności. Wpisanie "off" spowoduje, że faktura nie będzie miała wskazanego terminu płatności. Jeśli natomiast podamy "other_date", wówczas sami będziemy mogli zadeklarować ostateczną datę zapłaty poprzez uzupełnienie parametru "payment_to".
+"payment_to_kind" : pozwala określić termin płatności. Można tu podać liczbę np.: 5, wówczas mamy 5-dniowy termin płatności. Wpisanie "off" spowoduje, że faktura nie będzie miała wskazanego terminu płatności. Jeśli natomiast podamy "other_date", wówczas sami będziemy mogli zadeklarować ostateczną datę zapłaty poprzez uzupełnienie parametru "payment_to". Wartość "description" oznacza warunkowy (opisowy) termin płatności - opisany w sekcji "Faktury - warunkowy termin płatności (TerminOpis)"; wymaga podania pola "payment_to_description".
 "payment_to" : "2013-01-16",
+"payment_to_description" : {} - warunkowy (opisowy) termin płatności, np. "14 dni od daty sprzedaży" - patrz sekcja "Faktury - warunkowy termin płatności (TerminOpis)"
 "status" : "issued",
 "paid" : "0,00",
 "oid" : "zamowienie10021", - numer zamówienia (np z zewnętrznego systemu zamówień)
@@ -1940,6 +1942,217 @@ Dla usług:
 "GTU_12" - Świadczenie usług o charakterze niematerialnym - wyłącznie: doradczych, księgowych, prawnych, zarządczych, szkoleniowych, marketingowych, firm centralnych (head offices), reklamowych, badania rynku i opinii publicznej, w zakresie badań naukowych i prac rozwojowych
 "GTU_13" - Świadczenie usług transportowych i gospodarki magazynowej - Sekcja H PKWiU 2015 symbol ex 49.4, ex 52.1
 ```
+
+<a name="payment_to_description"></a>
+
+## Faktury - warunkowy termin płatności (TerminOpis)
+
+Oprócz terminu podanego jako liczba dni (`payment_to_kind: 14`) albo konkretna data (`payment_to_kind: "other_date"` + `payment_to`), na fakturze można umieścić **termin warunkowy (opisowy)** - np. *"14 dni od daty sprzedaży"*, *"30 dni od otrzymania faktury"*. Odpowiada to węzłowi `TerminOpis` w elemencie `TerminPlatnosci` schemy KSeF FA(3).
+
+### Jak włączyć warunek na fakturze
+
+Trzeba podać **dwa** pola jednocześnie:
+
+* `payment_to_kind` ustawione na `"description"`,
+* obiekt `payment_to_description` z opisem warunku.
+
+```shell
+"payment_to_kind": "description",
+"payment_to_description": {
+    "count": 14,                      - ilość jednostek czasu, liczba całkowita 0-999 (0 = płatność w dniu zdarzenia)
+    "unit_kind": "day",               - jednostka czasu: "day", "week", "month" albo "custom"
+    "unit_custom": "",                - własna jednostka czasu, wymagana i używana TYLKO gdy unit_kind = "custom" (max 50 znaków)
+    "event_kind": "since_sell_date",  - zdarzenie początkowe (lista wartości niżej)
+    "event_custom": ""                - własne zdarzenie, wymagane i używane TYLKO gdy event_kind = "custom" (max 256 znaków)
+}
+```
+
+Dopuszczalne wartości `unit_kind`:
+
+```shell
+"day"    - dzień/dni
+"week"   - tydzień/tygodnie
+"month"  - miesiąc/miesiące
+"custom" - własny wpis (treść w polu "unit_custom")
+```
+
+Dopuszczalne wartości `event_kind`:
+
+```shell
+"since_sell_date"         - od daty sprzedaży
+"since_issue_date"        - od wystawienia faktury
+"since_invoice_received"  - od otrzymania faktury
+"since_service_performed" - od wykonania usługi
+"since_delivery"          - od dostawy
+"custom"                  - własny wpis (treść w polu "event_custom")
+```
+
+Pola `unit_custom` i `event_custom` można pominąć, jeśli odpowiednio `unit_kind`/`event_kind` nie mają wartości `"custom"`. Klucze inne niż wymienione wyżej są pomijane; obiekt złożony wyłącznie z nieznanych kluczy zostanie odrzucony błędem walidacji (typowa pomyłka: `days`, `unit`, `termin` zamiast `count`, `unit_kind`, `event_kind`).
+
+### Wpływ na pole `payment_to`
+
+Przy warunkowym terminie płatności pole `payment_to` (data) jest **wyliczane przez system** i nie należy go podawać - wartość przesłana w żądaniu zostanie nadpisana.
+
+* Data jest wyliczana tylko dla `event_kind: "since_sell_date"` w połączeniu z `unit_kind` `"day"`, `"week"` lub `"month"` - liczona od `sell_date` (dla `count: 0` termin = `sell_date`).
+* Dla pozostałych kombinacji (np. `since_delivery`, `custom`) system nie zna daty zdarzenia, więc `payment_to` pozostaje `null`, a na fakturze widoczny jest sam opis warunku.
+
+### Dodanie faktury z warunkowym terminem płatności
+
+```shell
+curl https://YOUR_DOMAIN.fakturownia.pl/invoices.json \
+    -H 'Accept: application/json' \
+    -H 'Content-Type: application/json' \
+    -d '{"api_token": "API_TOKEN",
+        "invoice": {
+            "client_id": 1,
+            "sell_date": "2026-05-01",
+            "issue_date": "2026-05-01",
+            "payment_to_kind": "description",
+            "payment_to_description": {
+                "count": 14,
+                "unit_kind": "day",
+                "event_kind": "since_sell_date"
+            },
+            "positions":[
+                {"product_id": 1, "quantity": 2}
+            ]
+        }}'
+```
+
+Faktura zostanie wystawiona z terminem opisanym jako *"14 dni od daty sprzedaży"*, a pole `payment_to` zostanie wyliczone na `2026-05-15`.
+
+Warunek z własną jednostką i własnym zdarzeniem (`payment_to` pozostanie `null`):
+
+```shell
+curl https://YOUR_DOMAIN.fakturownia.pl/invoices.json \
+    -H 'Accept: application/json' \
+    -H 'Content-Type: application/json' \
+    -d '{"api_token": "API_TOKEN",
+        "invoice": {
+            "client_id": 1,
+            "payment_to_kind": "description",
+            "payment_to_description": {
+                "count": 3,
+                "unit_kind": "custom",
+                "unit_custom": "dni robocze",
+                "event_kind": "custom",
+                "event_custom": "od podpisania protokołu odbioru"
+            },
+            "positions":[
+                {"product_id": 1, "quantity": 1}
+            ]
+        }}'
+```
+
+### Zmiana i usunięcie warunku
+
+Aktualizacja warunku - wystarczy przesłać oba pola ponownie:
+
+```shell
+curl https://YOUR_DOMAIN.fakturownia.pl/invoices/123.json \
+    -X PUT \
+    -H 'Accept: application/json' \
+    -H 'Content-Type: application/json' \
+    -d '{"api_token": "API_TOKEN",
+        "invoice": {
+            "payment_to_kind": "description",
+            "payment_to_description": {
+                "count": 30,
+                "unit_kind": "day",
+                "event_kind": "since_invoice_received"
+            }
+        }}'
+```
+
+Usunięcie warunku polega na ustawieniu zwykłego terminu płatności - obiekt `payment_to_description` jest wtedy czyszczony automatycznie (nie trzeba go przesyłać):
+
+```shell
+curl https://YOUR_DOMAIN.fakturownia.pl/invoices/123.json \
+    -X PUT \
+    -H 'Accept: application/json' \
+    -H 'Content-Type: application/json' \
+    -d '{"api_token": "API_TOKEN",
+        "invoice": {
+            "payment_to_kind": "other_date",
+            "payment_to": "2026-06-30"
+        }}'
+```
+
+### Pobieranie warunku
+
+Pole `payment_to_description` jest zwracane w odpowiedzi na:
+
+* `GET /invoices/1.json`
+
+
+```shell
+curl "https://YOUR_DOMAIN.fakturownia.pl/invoices/123.json?api_token=API_TOKEN"
+```
+
+fragment odpowiedzi:
+
+```shell
+{
+    "id": 123,
+    "number": "12/2026",
+    "sell_date": "2026-05-01",
+    "payment_to_kind": "description",
+    "payment_to": "2026-05-15",
+    "payment_to_description": {
+        "count": 14,
+        "unit_kind": "day",
+        "event_kind": "since_sell_date"
+    },
+    ...
+}
+```
+
+Dla faktur bez warunkowego terminu płatności pole ma wartość `null`:
+
+```shell
+{
+    "id": 124,
+    "payment_to_kind": "14",
+    "payment_to": "2026-05-15",
+    "payment_to_description": null,
+    ...
+}
+```
+
+### Walidacje i komunikaty błędów
+
+Nieprawidłowe dane kończą się odpowiedzią `422 Unprocessable Entity`:
+
+```shell
+{
+    "code": "error",
+    "message": {
+        "payment_to_description": ["wymaga payment_to_kind: description"]
+    }
+}
+```
+
+| Komunikat | Przyczyna |
+|-----------|-----------|
+| `wymaga payment_to_kind: description` | przesłano `payment_to_description` bez `payment_to_kind: "description"` |
+| `musi być uzupełnione` | `payment_to_kind: "description"` bez obiektu `payment_to_description` |
+| `nieprawidłowy format — oczekiwany obiekt z polami count, unit_kind, event_kind` | `payment_to_description` nie jest obiektem, ma wartości niebędące tekstem/liczbą albo zawiera wyłącznie nieznane klucze |
+| `ilość musi być liczbą całkowitą od 0 do 999` | `count` spoza zakresu albo niebędące liczbą całkowitą (np. `14.7`, `"14abc"`) |
+| `nieprawidłowa jednostka czasu` | `unit_kind` spoza listy dopuszczalnych wartości |
+| `nieprawidłowe zdarzenie początkowe` | `event_kind` spoza listy dopuszczalnych wartości |
+| `podaj własną jednostkę czasu` / `własna jednostka — max 50 znaków` / `własna jednostka zawiera niedozwolone znaki` | `unit_kind: "custom"` i puste, za długie lub zawierające znaki sterujące `unit_custom` |
+| `podaj własne zdarzenie początkowe` / `własne zdarzenie — max 256 znaków` / `własne zdarzenie zawiera niedozwolone znaki` | `event_kind: "custom"` i puste, za długie lub zawierające znaki sterujące `event_custom` |
+| `warunkowy termin płatności (description) jest dostępny tylko dla kont z językiem polskim` | `payment_to_kind: "description"` na koncie spoza rynku polskiego |
+
+### Zgodność wsteczna
+
+* **Pole jest opcjonalne.** Żądania, które nie przesyłają `payment_to_description` i nie używają `payment_to_kind: "description"`, działają dokładnie tak jak wcześniej - dotychczasowe wartości `payment_to_kind` (liczba dni, `"0"`, `"off"`, `"other_date"`) i `payment_to` zachowują się bez zmian.
+* **W odpowiedziach pojawia się nowy klucz.** `payment_to_description` jest zwracane przy pobraniu faktury i listy faktur także dla dokumentów bez warunku - z wartością `null`. 
+* **`payment_to` może być puste przy warunku.** Jeśli integracja zakłada, że każda faktura ma datę terminu płatności, trzeba obsłużyć `payment_to: null` - występuje dla warunków innych niż liczone od daty sprzedaży.
+* **Obiekt (`payment_to_description`) bez `payment_to_kind` jest odrzucany (422), a nie ignorowany.** Jest to celowe: gdyby opisowy termin przechodził bez `payment_to_kind`, zostałby po cichu zastąpiony domyślnym terminem płatności z ustawień konta i klient dostałby fakturę z innym terminem niż zamówił.
+* **Domyślny termin płatności z ustawień konta.** Jeśli w ustawieniach konta domyślny termin płatności jest ustawiony jako opisowy termin, to faktury tworzone przez API **bez** pola `payment_to_kind` dziedziczą ten opisowy termin (i mogą nie mieć wyliczonego `payment_to`) - tak samo, jak wcześniej dziedziczyły domyślną liczbę dni. Aby mieć pewność co do terminu, przesyłaj `payment_to_kind` jawnie.
+* **Zmiana rodzaju terminu czyści opisowy termin.** Ustawienie `payment_to_kind` na inną wartość niż `"description"` usuwa zapisany obiekt `payment_to_description` - nie trzeba go zerować osobno.
+* **Kopiowanie faktur** (wystawienie faktury podobnej, faktura z proformy) przenosi opisowy termin na nowy dokument.
 
 <a name="clients"></a>
 
