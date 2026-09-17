@@ -167,6 +167,8 @@ Parametr `invoice_ids` umożliwia przekazanie id faktur do pobrania np.: `invoic
 
 Parametr `number=` umożliwia pobranie faktury o wskazanym numerze
 
+Parametr `gov_id=` umożliwia pobranie faktury o wskazanym numerze KSeF (dla kont w Polsce). Domyślnie przeszukiwane są faktury przychodowe — aby znaleźć wydatek z danym numerem KSeF, dodaj `income=no`
+
 Parametr `kind=` pozwala pobrać tylko jeden konkretny rodzaj dokumentów np.: `kind=accounting_note`
 
 Parametr `kinds=` pozwala wybrać kilka różnych rodzajów dokumentów np.: `&kinds[]=vat&kinds[]=proforma`
@@ -222,6 +224,19 @@ Faktury danego klienta
 
 ```shell
 curl https://twojaDomena.fakturownia.pl/invoices.json?client_id=ID_KLIENTA&api_token=API_TOKEN
+```
+
+<a name="f3b"></a>
+Faktura o wskazanym numerze KSeF (`gov_id`)
+
+```shell
+curl "https://twojaDomena.fakturownia.pl/invoices.json?gov_id=5252445767-20260201-ABC123DEF456&api_token=API_TOKEN"
+```
+
+Dla wydatku (faktury kosztowej) z danym numerem KSeF dodaj `income=no`:
+
+```shell
+curl "https://twojaDomena.fakturownia.pl/invoices.json?gov_id=5252445767-20260201-ABC123DEF456&income=no&api_token=API_TOKEN"
 ```
 
 <a name="f4"></a>
