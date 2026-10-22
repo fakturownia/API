@@ -733,6 +733,53 @@ Dla roli "Dodatkowy nabywca" możesz określić procentowy udział:
 }
 ```
 
+### Rola z karty klienta
+
+Klient może mieć zapisaną domyślną rolę odbiorcy — pole `recipient_role` klienta (`POST/PUT /clients.json`, tylko konta polskie). Gdy odbiorca na fakturze wskazuje klienta (`client_id` w `recipients` albo `recipient_id`), a żądanie nie podaje `role`, odbiorca dostaje rolę z karty klienta. Rola podana jawnie w `role` zawsze wygrywa.
+
+```json
+{
+  "invoice": {
+    "recipients": [{ "client_id": 123 }]
+  }
+}
+```
+
+Przy edycji faktury i podmianie klienta odbiorcy rola przechodzi z nowego klienta. Jeżeli nowy klient nie ma zapisanej roli, role `JST – odbiorca` i `Członek GV – odbiorca` zmieniają się na `Odbiorca` (bez aktywnego KSeF na koncie — na pustą rolę), a pozostałe role zostają bez zmian.
+
+Kierunek odwrotny (pierwsze nadanie): gdy na fakturze przychodowej odbiorca dostanie rolę `JST – odbiorca` albo `Członek GV – odbiorca`, a karta klienta nie ma jeszcze roli, rola zapisuje się na kartę. Faktura nie zmienia ani nie czyści roli, która jest już zapisana na karcie.
+
+> **Rola odbiorcy nie podlega korekcie.** Po wysyłce faktury do KSeF zmiany roli nie da się poprawić — sprawdź rolę przed wysyłką.
+
+#### Podmiana klienta na zapisanym odbiorcy — przysyłaj `tax_no`
+
+To, do którego klienta zostanie przypięty odbiorca, rozstrzyga jego numer identyfikacji podatkowej (`tax_no`), a nie przysłany `client_id`. Podmieniając klienta na odbiorcy, który ma już zapisany NIP, przysyłaj `client_id`, `name` **i** `tax_no` nowego klienta:
+
+```json
+{
+  "invoice": {
+    "recipients": [
+      { "id": 1, "client_id": 456, "name": "Gmina Przykładowa", "tax_no": "1112223344" }
+    ]
+  }
+}
+```
+
+Bez `tax_no` odbiorca zostaje przy poprzednim kliencie (razem z jego rolą i znacznikiem JST/GV), choć odpowiedź to `200` bez błędu. Odbiorcy bez NIP-u wystarczy `client_id` i `name` nowego klienta.
+
+### Znacznik JST / GV (`buyer_jst`, `buyer_gv`)
+
+Na fakturze przychodowej (konta polskie) odbiorca z rolą `JST – odbiorca` ustawia `buyer_jst` na `1`, a odbiorca z rolą `Członek GV – odbiorca` — `buyer_gv` na `1`. Nie trzeba ich przysyłać osobno — dotyczy to także roli odziedziczonej z karty klienta.
+
+| Sytuacja | Wynik |
+|----------|-------|
+| odbiorca z rolą JST/GV, znacznik nieprzysłany | `1` |
+| odbiorca z rolą JST/GV, wysłane `buyer_jst: 0` / `buyer_gv: 0` | `1` — rola wygrywa |
+| rola JST/GV usunięta z odbiorcy (także po podmianie klienta) | znacznik **zostaje** `1` |
+| wysłane `buyer_jst: 1` bez odbiorcy JST | `1` |
+
+Aby wyłączyć znacznik, usuń rolę JST/GV ze wszystkich odbiorców **i** wyślij `buyer_jst: 0` (`buyer_gv: 0`). Na fakturze już wysłanej do KSeF znacznika nie zmienia się edycją — tylko korektą.
+
 ---
 
 ## Rodzaj identyfikatora podatkowego (tax_no_kind)

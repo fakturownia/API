@@ -1062,6 +1062,7 @@ curl https://YOUR_DOMAIN.fakturownia.pl/invoices/111.json \
 
 Pola odbiorcy/wystawcy (recipient/issuer):
 ```shell
+   "client_id": 123 - id klienta z systemu; bez "name" pozostałe dane odbiorcy są uzupełniane z karty klienta (pola przysłane w żądaniu mają pierwszeństwo); rola z karty - patrz "role"
    "name": "Nazwa"
    "first_name": "Imię"
    "last_name": "Nazwisko"
@@ -1074,7 +1075,7 @@ Pola odbiorcy/wystawcy (recipient/issuer):
    "phone": "711000000"
    "email": "email@test.pl"
    "note": "Dodatkowe uwagi"
-   "role": "Dodatkowy odbiorca" - pole określa rodzaj podmiotów; przy tworzeniu faktur, jeżeli nie podano, zostanie domyślnie użyta pierwsza z dozwolonych wartości -> "Odbiorca"/"Wystawca faktury" (używane tylko przy włączonym KSEF na koncie)
+   "role": "Dodatkowy odbiorca" - pole określa rodzaj podmiotów; przy tworzeniu faktur, jeżeli nie podano, zostanie domyślnie użyta pierwsza z dozwolonych wartości -> "Odbiorca"/"Wystawca faktury" (używane tylko przy włączonym KSEF na koncie); jeżeli nie podano, a odbiorca wskazuje klienta (client_id / recipient_id) z zapisaną rolą ("recipient_role" w polach klienta), odbiorca dostaje rolę z karty klienta - szczegóły w [KSeF.md — Rola z karty klienta](KSeF.md#rola-z-karty-klienta)
 	Dozwolone wartości dla odbiorcy (recipient):
 		"Odbiorca"
 		"Dodatkowy nabywca"
@@ -1667,8 +1668,8 @@ Pola faktury
 "buyer_country" : "PL", - kraj nabywcy (ISO 3166)
 "buyer_note" : "", - dodatkowy opis nabywcy
 "buyer_email" : "", - email nabywcy
-"buyer_jst": "1", Czy faktura dotyczy jednostki samorządu terytorialnego? (tylko przychody)
-"buyer_gv": "1", Czy faktura dotyczy członka grupy VAT? (tylko przychody)
+"buyer_jst": "1", Czy faktura dotyczy jednostki samorządu terytorialnego? (tylko przychody; ustawiane automatycznie na "1", gdy odbiorca ma rolę "JST – odbiorca" - zob. KSeF.md, sekcja „Znacznik JST / GV")
+"buyer_gv": "1", Czy faktura dotyczy członka grupy VAT? (tylko przychody; ustawiane automatycznie na "1", gdy odbiorca ma rolę "Członek GV – odbiorca")
 "recipient_id" : "", - id odbiorcy (id klienta z systemu)
 "recipient_name" : "", - nazwa odbiorcy
 "recipient_street" : "", - ulica odbiorcy
@@ -2260,6 +2261,7 @@ Pola klienta
     "discount": "10" - domyślny rabat wyrażony w procentach, podajemy tylko liczbę np.: 15, oznacza to 15% rabatu
     "default_tax": "23" - domyślny podatek, podajemy wartość liczbową np.: 23
     "price_list_id": "" - domyślny cennik, podajemy id cennika
+    "recipient_role": "" - domyślna rola klienta jako odbiorcy (podmiot 3) na fakturach, tylko konta polskie; dozwolone wartości jak w polu "role" odbiorcy, dokładnie z półpauzą (np. "JST – odbiorca", "Członek GV – odbiorca"), inna wartość zwraca błąd 422; szczegóły w [KSeF.md — Rola z karty klienta](KSeF.md#rola-z-karty-klienta)
     "payment_to_kind": domyślny termin płatności, możliwe opcje do wyboru:
         liczba całkowita np.: "30" - co oznacza 30-dniowy termin płatności
         "0" - natychmiast
