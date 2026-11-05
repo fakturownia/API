@@ -136,6 +136,14 @@ Działające przykłady wywołania API Fakturowni znajdują się też w w syste
 
 `API_TOKEN` token trzeba pobrać z ustawień aplikacji ("Ustawienia -> Ustawienia konta -> Integracja -> Kod autoryzacyjny API")
 
+Token przekazujemy w nagłówku HTTP `Authorization`:
+
+```shell
+Authorization: Bearer API_TOKEN
+```
+
+Przekazanie tokena jako parametru `api_token` w adresie URL lub w treści żądania jest nadal obsługiwane, ale niezalecane - adres URL z tokenem trafia do logów serwerów i proxy oraz do historii przeglądarki.
+
 <a name="list_params"></a>
 
 ## Dodatkowe parametry dostępne przy pobieraniu listy rekordów
@@ -207,21 +215,21 @@ Można dodać do parametru `.desc` aby zmienić kolejność sortowania na malej�
 Pobranie listy faktur z aktualnego miesiąca
 
 ```shell
-curl https://twojaDomena.fakturownia.pl/invoices.json?period=this_month&api_token=API_TOKEN&page=1
+curl -H 'Authorization: Bearer API_TOKEN' https://twojaDomena.fakturownia.pl/invoices.json?period=this_month&page=1
 ```
 
 <a name="f2"></a>
 Pobranie listy faktur wraz z ich pozycjami
 
 ```shell
-curl https://twojaDomena.fakturownia.pl/invoices.json?include_positions=true&api_token=API_TOKEN&page=1
+curl -H 'Authorization: Bearer API_TOKEN' https://twojaDomena.fakturownia.pl/invoices.json?include_positions=true&page=1
 ```
 
 <a name="f3"></a>
 Faktury danego klienta
 
 ```shell
-curl https://twojaDomena.fakturownia.pl/invoices.json?client_id=ID_KLIENTA&api_token=API_TOKEN
+curl -H 'Authorization: Bearer API_TOKEN' https://twojaDomena.fakturownia.pl/invoices.json?client_id=ID_KLIENTA
 ```
 
 <a name="f4"></a>
@@ -229,7 +237,7 @@ Pobranie faktury po ID
 
 
 ```shell
-curl https://twojaDomena.fakturownia.pl/invoices/100.json?api_token=API_TOKEN
+curl -H 'Authorization: Bearer API_TOKEN' https://twojaDomena.fakturownia.pl/invoices/100.json
 ```
 
 <a name="f5"></a>
@@ -237,7 +245,7 @@ Pobranie PDF-a
 
 
 ```shell
-curl https://twojaDomena.fakturownia.pl/invoices/100.pdf?api_token=API_TOKEN
+curl -H 'Authorization: Bearer API_TOKEN' https://twojaDomena.fakturownia.pl/invoices/100.pdf
 ```
 
 <a name="f6"></a>
@@ -245,7 +253,7 @@ Wysłanie faktury e-mailem do klienta (na e-mail klienta podany przy tworzeniu f
 
 
 ```shell
-curl -X POST https://twojaDomena.fakturownia.pl/invoices/100/send_by_email.json?api_token=API_TOKEN
+curl -X POST -H 'Authorization: Bearer API_TOKEN' https://twojaDomena.fakturownia.pl/invoices/100/send_by_email.json
 ```
 Opcjonalne parametry do wywołania send_by_email:
 
@@ -274,8 +282,8 @@ Dodanie nowej faktury
 curl https://YOUR_DOMAIN.fakturownia.pl/invoices.json \
     -H 'Accept: application/json' \
     -H 'Content-Type: application/json' \
+    -H 'Authorization: Bearer API_TOKEN' \
     -d '{
-        "api_token": "API_TOKEN",
         "invoice": {
             "kind":"vat",
             "number": null,
@@ -303,7 +311,8 @@ Możesz zaktualizować niektóre dane na karcie klienta (np.: adres), dodając p
 curl https://YOUR_DOMAIN.fakturownia.pl/invoices.json \
 	-H 'Accept: application/json' \
 	-H 'Content-Type: application/json' \
-	-d '{"api_token": "API_TOKEN",
+	-H 'Authorization: Bearer API_TOKEN' \
+	-d '{
 		"invoice": {
             "kind":"vat",
             "number": null,
@@ -334,7 +343,8 @@ Zostanie wystawiona Faktura VAT z aktualnym dniem i z 5 dniowym terminem płatno
 curl https://YOUR_DOMAIN.fakturownia.pl/invoices.json \
     -H 'Accept: application/json' \
     -H 'Content-Type: application/json' \
-    -d '{"api_token": "API_TOKEN",
+    -H 'Authorization: Bearer API_TOKEN' \
+    -d '{
         "invoice": {
             "payment_to_kind": 5,
             "client_id": 1,
@@ -353,8 +363,8 @@ Dodanie identycznej faktury o podanym rodzaju
 curl https://YOUR_DOMAIN.fakturownia.pl/invoices.json \
     -H 'Accept: application/json' \
     -H 'Content-Type: application/json' \
+    -H 'Authorization: Bearer API_TOKEN' \
     -d '{
-        "api_token": "API_TOKEN",
         "invoice": {
             "copy_invoice_from": ID_DOKUMENTU_ZRODLOWEGO,
             "kind": "RODZAJ_FAKTURY"
@@ -368,8 +378,8 @@ Dodanie faktury zaliczkowej na podstawie zamówienia – % pełnej kwoty (podł�
 curl https://YOUR_DOMAIN.fakturownia.pl/invoices.json \
     -H 'Accept: application/json' \
     -H 'Content-Type: application/json' \
+    -H 'Authorization: Bearer API_TOKEN' \
     -d '{
-        "api_token": "API_TOKEN",
         "invoice": {
             "copy_invoice_from": ID_ZAMOWIENIA,
             "kind": "advance",
@@ -386,8 +396,8 @@ Dodanie faktury zaliczkowej na podstawie zamówienia – podana kwota brutto (po
 curl https://YOUR_DOMAIN.fakturownia.pl/invoices.json \
     -H 'Accept: application/json' \
     -H 'Content-Type: application/json' \
+    -H 'Authorization: Bearer API_TOKEN' \
     -d '{
-        "api_token": "API_TOKEN",
         "invoice": {
             "copy_invoice_from": ID_ZAMOWIENIA,
             "kind": "advance",
@@ -404,8 +414,8 @@ Dodanie faktury końcowej na podstawie zamówienia i faktur zaliczkowych (podł�
 curl https://YOUR_DOMAIN.fakturownia.pl/invoices.json \
     -H 'Accept: application/json' \
     -H 'Content-Type: application/json' \
+    -H 'Authorization: Bearer API_TOKEN' \
     -d '{
-        "api_token": "API_TOKEN",
         "invoice": {
             "copy_invoice_from": ID_ZAMOWIENIA,
             "kind": "final",
@@ -420,8 +430,8 @@ Dodanie faktury VAT na podstawie faktury Proforma
 curl https://YOUR_DOMAIN.fakturownia.pl/invoices.json \
     -H 'Accept: application/json' \
     -H 'Content-Type: application/json' \
+    -H 'Authorization: Bearer API_TOKEN' \
     -d '{
-        "api_token": "API_TOKEN",
         "invoice": {
             "copy_invoice_from": ID_PROFORMY,
             "kind": "vat"
@@ -438,8 +448,8 @@ Jeśli w ustawieniach konta zaznaczyłeś opcję "Faktury OSS", możesz utworzy�
 curl https://YOUR_DOMAIN.fakturownia.pl/invoices.json \
     -H 'Accept: application/json' \
     -H 'Content-Type: application/json' \
+    -H 'Authorization: Bearer API_TOKEN' \
     -d '{
-        "api_token": "API_TOKEN",
         "invoice": {
             "kind":"vat",
             "seller_name": "Wystawca Sp. z o.o.",
@@ -454,15 +464,15 @@ curl https://YOUR_DOMAIN.fakturownia.pl/invoices.json \
     }'
 ```
 
-Dodanie do żądania rekordu  "identify_oss": "1" spowoduje, że system przed oznaczeniem dokumentu jako "OSS" najpierw sprawdzi, czy spełnia on odpowiednie warunki. W przypadku nieprawidłowych danych, system nie oznaczy faktury jako faktura "OSS" - na przykład, jeśli na przesłanej fakturze kraj Nabywcy będzie taki sam jak kraj Sprzedawcy. Rekord ten należy dodać w tym samym miejscu, co "api_token" i "invoice".
+Dodanie do żądania rekordu  "identify_oss": "1" spowoduje, że system przed oznaczeniem dokumentu jako "OSS" najpierw sprawdzi, czy spełnia on odpowiednie warunki. W przypadku nieprawidłowych danych, system nie oznaczy faktury jako faktura "OSS" - na przykład, jeśli na przesłanej fakturze kraj Nabywcy będzie taki sam jak kraj Sprzedawcy. Rekord ten należy dodać w tym samym miejscu, co "invoice".
 
 
 ```shell
 curl https://YOUR_DOMAIN.fakturownia.pl/invoices.json \
     -H 'Accept: application/json' \
     -H 'Content-Type: application/json' \
+    -H 'Authorization: Bearer API_TOKEN' \
     -d '{
-        "api_token": "API_TOKEN",
         "identify_oss": "1" ,
         "invoice": {
             "kind":"vat",
@@ -485,7 +495,8 @@ Dodanie nowej faktury korygującej
 curl https://YOUR_DOMAIN.fakturownia.pl/invoices.json \
     -H 'Accept: application/json' \
     -H 'Content-Type: application/json' \
-    -d '{"api_token": "API_TOKEN",
+    -H 'Authorization: Bearer API_TOKEN' \
+    -d '{
         "invoice": {
             "kind": "correction",
             "correction_reason": "Zła ilość",
@@ -526,8 +537,8 @@ Ważne! W przypadku faktur kosztowych wszystkie pola zaczynające się od `selle
 curl https://YOUR_DOMAIN.fakturownia.pl/invoices.json \
     -H 'Accept: application/json' \
     -H 'Content-Type: application/json' \
+    -H 'Authorization: Bearer API_TOKEN' \
     -d '{
-        "api_token": "API_TOKEN",
         "invoice": {
             "kind":"vat",
             "income": "0",
@@ -556,8 +567,8 @@ curl https://YOUR_DOMAIN.fakturownia.pl/invoices/111.json \
     -X PUT \
     -H 'Accept: application/json'  \
     -H 'Content-Type: application/json' \
+    -H 'Authorization: Bearer API_TOKEN' \
     -d '{
-        "api_token": "API_TOKEN",
         "invoice": {
             "buyer_name": "Nowa nazwa klienta Sp. z o.o."
         }
@@ -572,8 +583,8 @@ curl https://YOUR_DOMAIN.fakturownia.pl/invoices/111.json \
     -X PUT \
     -H 'Accept: application/json'  \
     -H 'Content-Type: application/json' \
+    -H 'Authorization: Bearer API_TOKEN' \
     -d '{
-        "api_token": "API_TOKEN",
         "invoice": {
             "positions": [{"id":32649087, "name":"test"}]
         }
@@ -588,8 +599,8 @@ curl https://YOUR_DOMAIN.fakturownia.pl/invoices/111.json \
     -X PUT \
     -H 'Accept: application/json'  \
     -H 'Content-Type: application/json' \
+    -H 'Authorization: Bearer API_TOKEN' \
     -d '{
-        "api_token": "API_TOKEN",
         "invoice": {
             "positions": [{"id":32649087, "_destroy": 1}]
         }
@@ -604,8 +615,8 @@ curl https://YOUR_DOMAIN.fakturownia.pl/invoices/111.json \
     -X PUT \
     -H 'Accept: application/json'  \
     -H 'Content-Type: application/json' \
+    -H 'Authorization: Bearer API_TOKEN' \
     -d '{
-        "api_token": "API_TOKEN",
         "invoice": {
             "positions": [{"name":"Produkt A1", "tax":23, "total_price_gross":10.23, "quantity":1}]
         }
@@ -635,8 +646,8 @@ Przykład - faktura marża z pozycjami marżowymi:
 curl https://YOUR_DOMAIN.fakturownia.pl/invoices.json \
     -H 'Accept: application/json' \
     -H 'Content-Type: application/json' \
+    -H 'Authorization: Bearer API_TOKEN' \
     -d '{
-        "api_token": "API_TOKEN",
         "invoice": {
             "kind": "vat_margin",
             "number": null,
@@ -676,8 +687,8 @@ Przykład - faktura marża z pozycjami mieszanymi:
 curl https://YOUR_DOMAIN.fakturownia.pl/invoices.json \
     -H 'Accept: application/json' \
     -H 'Content-Type: application/json' \
+    -H 'Authorization: Bearer API_TOKEN' \
     -d '{
-        "api_token": "API_TOKEN",
         "invoice": {
             "kind": "vat_margin",
             "number": null,
@@ -713,14 +724,14 @@ curl https://YOUR_DOMAIN.fakturownia.pl/invoices.json \
 Zmiana statusu faktury
 
 ```shell
-curl "https://YOUR_DOMAIN.fakturownia.pl/invoices/111/change_status.json?api_token=API_TOKEN&status=STATUS" -X POST
+curl -H 'Authorization: Bearer API_TOKEN' "https://YOUR_DOMAIN.fakturownia.pl/invoices/111/change_status.json?status=STATUS" -X POST
 ```
 
 <a name="f12"></a>
 Pobranie listy definicji faktur cyklicznych
 
 ```shell
-curl https://YOUR_DOMAIN.fakturownia.pl/recurrings.json?api_token=API_TOKEN
+curl -H 'Authorization: Bearer API_TOKEN' https://YOUR_DOMAIN.fakturownia.pl/recurrings.json
 ```
 
 <a name="f13"></a>
@@ -730,7 +741,8 @@ Dodanie definicji faktury cyklicznej
 curl https://YOUR_DOMAIN.fakturownia.pl/recurrings.json \
     -H 'Accept: application/json' \
     -H 'Content-Type: application/json' \
-    -d '{"api_token": "API_TOKEN",
+    -H 'Authorization: Bearer API_TOKEN' \
+    -d '{
         "recurring": {
             "name": "Nazwa cyklicznosci",
             "invoice_id": 1,
@@ -751,8 +763,8 @@ curl https://YOUR_DOMAIN.fakturownia.pl/recurrings/111.json \
     -X PUT \
     -H 'Accept: application/json' \
     -H 'Content-Type: application/json' \
+    -H 'Authorization: Bearer API_TOKEN' \
     -d '{
-        "api_token": "API_TOKEN",
         "recurring": {
             "next_invoice_date": "2016-02-01"
         }
@@ -763,7 +775,7 @@ curl https://YOUR_DOMAIN.fakturownia.pl/recurrings/111.json \
 Usunięcie faktury
 
 ```shell
-curl -X DELETE "https://YOUR_DOMAIN.fakturownia.pl/invoices/INVOICE_ID.json?api_token=API_TOKEN"
+curl -X DELETE -H 'Authorization: Bearer API_TOKEN' "https://YOUR_DOMAIN.fakturownia.pl/invoices/INVOICE_ID.json"
 ```
 
 <a name="f16"></a>
@@ -774,8 +786,8 @@ curl https://YOUR_DOMAIN.fakturownia.pl/invoices/cancel.json \
         -X POST \
 	-H 'Accept:application/json' \
 	-H 'Content-Type: application/json' \
+	-H 'Authorization: Bearer API_TOKEN' \
 	-d '{
-	        "api_token": "API_TOKEN",
             "cancel_invoice_id": ID_FAKTURY,
 		    "cancel_reason": "Powód anulowania (opcjonalnie)"
 	 }'
@@ -783,7 +795,7 @@ curl https://YOUR_DOMAIN.fakturownia.pl/invoices/cancel.json \
 
 Aby wyświetlić powód anulowania wskazany w anulowanym dokumencie, dołącz parametr `additional_fields[invoice]=cancel_reason` w adresie URL żądania. Przykład:
 
-https://YOUR_DOMAIN.fakturownia.pl/invoices/ID_FAKTURY.json?api_token=API_TOKEN&additional_fields[invoice]=cancel_reason
+https://YOUR_DOMAIN.fakturownia.pl/invoices/ID_FAKTURY.json?additional_fields[invoice]=cancel_reason
 
 <a name="f17"></a>
 Połączenie istniejącej faktury i paragonu
@@ -793,8 +805,8 @@ curl https://YOUR_DOMAIN.fakturownia.pl/invoices/ID_FAKTURY.json \
     -X PUT \
     -H 'Accept: application/json' \
     -H 'Content-Type: application/json' \
+    -H 'Authorization: Bearer API_TOKEN' \
     -d '{
-        "api_token": "API_TOKEN",
         "invoice": {
             "from_invoice_id": ID_PARAGONU,
             "invoice_id": ID_PARAGONU,
@@ -811,8 +823,8 @@ curl https://YOUR_DOMAIN.fakturownia.pl/invoices.json \
     -X POST \
     -H 'Accept: application/json' \
     -H 'Content-Type: application/json' \
+    -H 'Authorization: Bearer API_TOKEN' \
     -d '{
-        "api_token": "API_TOKEN",
         "invoice": {
             "from_invoice_id": ID_PARAGONU,
             "additional_params":"for_receipt",
@@ -832,7 +844,7 @@ Dane `buyer_name`, `buyer_tax_no`, `positions` wypełniamy danymi z paragonu.
 Pobranie wszystkich załączników faktury w archiwum ZIP
 
 ```shell
-curl -o attachments.zip https://YOUR_DOMAIN.fakturownia.pl/invoices/INVOICE_ID/attachments_zip.json?api_token=API_TOKEN
+curl -H 'Authorization: Bearer API_TOKEN' -o attachments.zip https://YOUR_DOMAIN.fakturownia.pl/invoices/INVOICE_ID/attachments_zip.json
 ```
 
 <a name="f18b"></a>
@@ -840,7 +852,7 @@ Dodanie nowego załącznika do faktury
 
 1. Pobranie danych niezbędnych do przesłania pliku:
     ```shell
-    curl https://YOUR_DOMAIN.fakturownia.pl/invoices/INVOICE_ID/get_new_attachment_credentials.json?api_token=API_TOKEN
+    curl -H 'Authorization: Bearer API_TOKEN' https://YOUR_DOMAIN.fakturownia.pl/invoices/INVOICE_ID/get_new_attachment_credentials.json
     ```
 
 2. Przesłanie pliku:
@@ -857,7 +869,7 @@ Dodanie nowego załącznika do faktury
 
 3. Dodanie załącznika (przesłanego pliku) do faktury:
     ```shell
-    curl -X POST https://YOUR_DOMAIN.fakturownia.pl/invoices/INVOICE_ID/add_attachment.json?api_token=API_TOKEN&file_name=name.ext
+    curl -X POST -H 'Authorization: Bearer API_TOKEN' https://YOUR_DOMAIN.fakturownia.pl/invoices/INVOICE_ID/add_attachment.json?file_name=name.ext
     ```
 
 4. Domyślnie załączniki nie są widoczne dla klientów. Aby to zmienić, można wysłać następujące żądanie:
@@ -867,8 +879,8 @@ Dodanie nowego załącznika do faktury
         -X PUT \
         -H 'Accept: application/json'  \
         -H 'Content-Type: application/json' \
+        -H 'Authorization: Bearer API_TOKEN' \
         -d '{
-            "api_token": "API_TOKEN",
             "invoice": {
                 "show_attachments": true
             }
@@ -880,7 +892,7 @@ Dodanie nowego załącznika do faktury
 ## Wydruk fiskalny
 
 ```shell
-curl https://twojaDomena.fakturownia.pl/invoices/fiscal_print?api_token=API_TOKEN&invoice_ids[]=111&invoice_ids[]=112&fiskator_name=NAZWA_DRUKARKI
+curl -H 'Authorization: Bearer API_TOKEN' https://twojaDomena.fakturownia.pl/invoices/fiscal_print?invoice_ids[]=111&invoice_ids[]=112&fiskator_name=NAZWA_DRUKARKI
 ```
 
 Za pomocą parametru `invoice_ids[]` przekazujemy id faktur do wydrukowania.
@@ -894,7 +906,7 @@ Za pomocą parametru `fiskator_name` możemy przekazać nazwę drukarki, na któ
 1. Pobranie faktury korekty wraz z dwoma dodatkowymi polami "Treść korygowana" i "Treść poprawiona":
 
 ```shell
-curl https://twojaDomena.fakturownia.pl/invoices/INVOICE_ID.json?api_token=API_TOKEN&additional_fields[invoice]=corrected_content_before,corrected_content_after
+curl -H 'Authorization: Bearer API_TOKEN' https://twojaDomena.fakturownia.pl/invoices/INVOICE_ID.json?additional_fields[invoice]=corrected_content_before,corrected_content_after
 ```
 
 2. Dodanie nowej faktury korygującej
@@ -902,7 +914,8 @@ curl https://twojaDomena.fakturownia.pl/invoices/INVOICE_ID.json?api_token=API_T
 curl https://YOUR_DOMAIN.fakturownia.pl/invoices.json \
 -H 'Accept: application/json' \
 -H 'Content-Type: application/json' \
--d '{"api_token": "API_TOKEN",
+-H 'Authorization: Bearer API_TOKEN' \
+-d '{
     "invoice": {
         "kind": "correction",
         "correction_reason": "Zła ilość",
@@ -936,7 +949,7 @@ curl https://YOUR_DOMAIN.fakturownia.pl/invoices.json \
 Pobranie faktury korekty wraz z informacją "przed / po korekcie" w pozycjach:
 
 ```shell
-curl https://twojaDomena.fakturownia.pl/invoices/INVOICE_ID.json?api_token=API_TOKEN&correction_positions=full
+curl -H 'Authorization: Bearer API_TOKEN' https://twojaDomena.fakturownia.pl/invoices/INVOICE_ID.json?correction_positions=full
 ```
 
 <a name="f21"></a>
@@ -952,8 +965,8 @@ curl https://YOUR_DOMAIN.fakturownia.pl/invoices.json \
     -X POST \
 	-H 'Accept:application/json' \
 	-H 'Content-Type: application/json' \
+	-H 'Authorization: Bearer API_TOKEN' \
 	-d '{
-	        "api_token": "API_TOKEN",
             "fill_default_descriptions":true,
             "invoice": {
                 "kind":"vat",
@@ -978,8 +991,8 @@ curl https://YOUR_DOMAIN.fakturownia.pl/invoices.json \
     -X POST \
 	-H 'Accept:application/json' \
 	-H 'Content-Type: application/json' \
+	-H 'Authorization: Bearer API_TOKEN' \
 	-d '{
-	        "api_token": "API_TOKEN",
             "invoice": {
                 "use_prices_from_price_lists": true,
                 "price_list_id": ID_CENNIKA,
@@ -999,7 +1012,7 @@ Jeśli w żądaniu przesyłamy `client_id`, a w karcie tego klienta mamy określ
 ## Pobranie faktury razem z połączonymi płatnościami
 
 ```shell
-curl https://twojaDomena.fakturownia.pl/invoices/INVOICE_ID.json?api_token=API_TOKEN&additional_fields[invoice]=connected_payments
+curl -H 'Authorization: Bearer API_TOKEN' https://twojaDomena.fakturownia.pl/invoices/INVOICE_ID.json?additional_fields[invoice]=connected_payments
 ```
 
 <a name="f24"></a>
@@ -1012,8 +1025,8 @@ curl https://YOUR_DOMAIN.fakturownia.pl/invoices.json \
     -X POST \
     -H 'Accept: application/json' \
     -H 'Content-Type: application/json' \
+    -H 'Authorization: Bearer API_TOKEN' \
     -d '{
-        "api_token": "API_TOKEN",
         "invoice": {
             "issue_date": "2024-08-01",
             "seller_name": "Wystawca Sp. z o.o.",
@@ -1039,8 +1052,8 @@ curl https://YOUR_DOMAIN.fakturownia.pl/invoices/111.json \
     -X PUT \
     -H 'Accept: application/json'  \
     -H 'Content-Type: application/json' \
+    -H 'Authorization: Bearer API_TOKEN' \
     -d '{
-        "api_token": "API_TOKEN",
         "invoice": {
             "recipients": [{"id":1, "name": "Nowa nazwa"}]
         }
@@ -1052,8 +1065,8 @@ curl https://YOUR_DOMAIN.fakturownia.pl/invoices/111.json \
     -X PUT \
     -H 'Accept: application/json'  \
     -H 'Content-Type: application/json' \
+    -H 'Authorization: Bearer API_TOKEN' \
     -d '{
-        "api_token": "API_TOKEN",
         "invoice": {
             "recipients": [{"id":1, "_destroy": 1}]
         }
@@ -1107,7 +1120,7 @@ Uwagi (descriptions) to nowy model przechowywania dodatkowych opisów na fakturz
 Aby pobrać uwagi przypisane do faktury, należy użyć parametru `include=descriptions`:
 
 ```shell
-curl https://YOUR_DOMAIN.fakturownia.pl/invoices/INVOICE_ID.json?api_token=API_TOKEN
+curl -H 'Authorization: Bearer API_TOKEN' https://YOUR_DOMAIN.fakturownia.pl/invoices/INVOICE_ID.json
 ```
 
 Przykładowa odpowiedź (fragment):
@@ -1141,8 +1154,8 @@ curl https://YOUR_DOMAIN.fakturownia.pl/invoices.json \
     -X POST \
     -H 'Accept: application/json' \
     -H 'Content-Type: application/json' \
+    -H 'Authorization: Bearer API_TOKEN' \
     -d '{
-        "api_token": "API_TOKEN",
         "invoice": {
             "kind": "vat",
             "seller_name": "Wystawca Sp. z o.o.",
@@ -1167,8 +1180,8 @@ curl https://YOUR_DOMAIN.fakturownia.pl/invoices/INVOICE_ID.json \
     -X PUT \
     -H 'Accept: application/json' \
     -H 'Content-Type: application/json' \
+    -H 'Authorization: Bearer API_TOKEN' \
     -d '{
-        "api_token": "API_TOKEN",
         "invoice": {
             "descriptions": [
                 {"id": 1, "kind": "Zmieniony nagłówek", "content": "Zmieniona treść", "position_index": 1},
@@ -1187,8 +1200,8 @@ curl https://YOUR_DOMAIN.fakturownia.pl/invoices/INVOICE_ID.json \
     -X PUT \
     -H 'Accept: application/json' \
     -H 'Content-Type: application/json' \
+    -H 'Authorization: Bearer API_TOKEN' \
     -d '{
-        "api_token": "API_TOKEN",
         "invoice": {
             "descriptions": [
                 {"id": 1, "_destroy": 1}
@@ -1231,7 +1244,7 @@ Rozliczenia to mechanizm dodawania obciążeń i odliczeń na fakturze, wpływaj
 Rozliczenia są automatycznie dołączane do odpowiedzi JSON faktury, gdy konto ma aktywne rozliczenia:
 
 ```shell
-curl https://YOUR_DOMAIN.fakturownia.pl/invoices/INVOICE_ID.json?api_token=API_TOKEN
+curl -H 'Authorization: Bearer API_TOKEN' https://YOUR_DOMAIN.fakturownia.pl/invoices/INVOICE_ID.json
 ```
 
 Przykładowa odpowiedź (fragment):
@@ -1266,8 +1279,8 @@ curl https://YOUR_DOMAIN.fakturownia.pl/invoices.json \
     -X POST \
     -H 'Accept: application/json' \
     -H 'Content-Type: application/json' \
+    -H 'Authorization: Bearer API_TOKEN' \
     -d '{
-        "api_token": "API_TOKEN",
         "invoice": {
             "kind": "vat",
             "seller_name": "Wystawca Sp. z o.o.",
@@ -1293,8 +1306,8 @@ curl https://YOUR_DOMAIN.fakturownia.pl/invoices/INVOICE_ID.json \
     -X PUT \
     -H 'Accept: application/json' \
     -H 'Content-Type: application/json' \
+    -H 'Authorization: Bearer API_TOKEN' \
     -d '{
-        "api_token": "API_TOKEN",
         "invoice": {
             "settlement_positions": [
                 {"id": 1, "amount": "150.00", "reason": "Zmienione koszty transportu"},
@@ -1313,8 +1326,8 @@ curl https://YOUR_DOMAIN.fakturownia.pl/invoices/INVOICE_ID.json \
     -X PUT \
     -H 'Accept: application/json' \
     -H 'Content-Type: application/json' \
+    -H 'Authorization: Bearer API_TOKEN' \
     -d '{
-        "api_token": "API_TOKEN",
         "invoice": {
             "settlement_positions": [
                 {"id": 1, "_destroy": 1}
@@ -1404,7 +1417,7 @@ Listy działają tak samo jak [uwagi (`descriptions`)](#f25) i [rozliczenia (`se
 Na kontach PL pola skalarne oraz 3 listy są **automatycznie** dołączane do odpowiedzi JSON faktury:
 
 ```shell
-curl https://YOUR_DOMAIN.fakturownia.pl/invoices/INVOICE_ID.json?api_token=API_TOKEN
+curl -H 'Authorization: Bearer API_TOKEN' https://YOUR_DOMAIN.fakturownia.pl/invoices/INVOICE_ID.json
 ```
 
 Przykładowa odpowiedź (fragment):
@@ -1439,8 +1452,8 @@ curl https://YOUR_DOMAIN.fakturownia.pl/invoices.json \
     -X POST \
     -H 'Accept: application/json' \
     -H 'Content-Type: application/json' \
+    -H 'Authorization: Bearer API_TOKEN' \
     -d '{
-        "api_token": "API_TOKEN",
         "invoice": {
             "kind": "vat",
             "seller_name": "Wystawca Sp. z o.o.",
@@ -1476,8 +1489,8 @@ curl https://YOUR_DOMAIN.fakturownia.pl/invoices/INVOICE_ID.json \
     -X PUT \
     -H 'Accept: application/json' \
     -H 'Content-Type: application/json' \
+    -H 'Authorization: Bearer API_TOKEN' \
     -d '{
-        "api_token": "API_TOKEN",
         "invoice": {
             "delivery_terms": "FCA",
             "transaction_orders": [
@@ -1497,8 +1510,8 @@ curl https://YOUR_DOMAIN.fakturownia.pl/invoices/INVOICE_ID.json \
     -X PUT \
     -H 'Accept: application/json' \
     -H 'Content-Type: application/json' \
+    -H 'Authorization: Bearer API_TOKEN' \
     -d '{
-        "api_token": "API_TOKEN",
         "invoice": {
             "transaction_orders": [
                 {"id": 2, "_destroy": 1}
@@ -1570,7 +1583,7 @@ Jeśli chcesz w pełni przejść na nowy węzeł, przekazuj dane bezpośrednio p
 Po pobraniu danych faktury np. przez:
 
 ```shell
-curl https://twojaDomena.fakturownia.pl/invoices/100.json?api_token=API_TOKEN
+curl -H 'Authorization: Bearer API_TOKEN' https://twojaDomena.fakturownia.pl/invoices/100.json
 ```
 
 API zwraca nam m.in. pole `token` na podstawie którego możemy otrzymać linki do podglądu faktury oraz do pobrania PDF-a z wygenrowaną fakturą.
@@ -1616,7 +1629,8 @@ Przykład - dodanie nowej faktury (minimalna wersja, gdy mamy Id produktu, nabyw
 curl https://YOUR_DOMAIN.fakturownia.pl/invoices.json \
     -H 'Accept: application/json' \
     -H 'Content-Type: application/json' \
-    -d '{"api_token": "API_TOKEN",
+    -H 'Authorization: Bearer API_TOKEN' \
+    -d '{
         "invoice": {
             "payment_to_kind": 5,
             "client_id": 1,
@@ -1912,7 +1926,8 @@ Jeśli podczas tworzenia nowej faktury chcemy umieścic na niej kody GTU, możem
 curl https://YOUR_DOMAIN.fakturownia.pl/invoices.json \
     -H 'Accept: application/json' \
     -H 'Content-Type: application/json' \
-    -d '{"api_token": "API_TOKEN",
+    -H 'Authorization: Bearer API_TOKEN' \
+    -d '{
         "invoice": {
             "payment_to_kind": 5,
             "client_id": 1,
@@ -2002,7 +2017,8 @@ Przy warunkowym terminie płatności pole `payment_to` (data) jest **wyliczane p
 curl https://YOUR_DOMAIN.fakturownia.pl/invoices.json \
     -H 'Accept: application/json' \
     -H 'Content-Type: application/json' \
-    -d '{"api_token": "API_TOKEN",
+    -H 'Authorization: Bearer API_TOKEN' \
+    -d '{
         "invoice": {
             "client_id": 1,
             "sell_date": "2026-05-01",
@@ -2027,7 +2043,8 @@ Warunek z własną jednostką i własnym zdarzeniem (`payment_to` pozostanie `nu
 curl https://YOUR_DOMAIN.fakturownia.pl/invoices.json \
     -H 'Accept: application/json' \
     -H 'Content-Type: application/json' \
-    -d '{"api_token": "API_TOKEN",
+    -H 'Authorization: Bearer API_TOKEN' \
+    -d '{
         "invoice": {
             "client_id": 1,
             "payment_to_kind": "description",
@@ -2053,7 +2070,8 @@ curl https://YOUR_DOMAIN.fakturownia.pl/invoices/123.json \
     -X PUT \
     -H 'Accept: application/json' \
     -H 'Content-Type: application/json' \
-    -d '{"api_token": "API_TOKEN",
+    -H 'Authorization: Bearer API_TOKEN' \
+    -d '{
         "invoice": {
             "payment_to_kind": "description",
             "payment_to_description": {
@@ -2071,7 +2089,8 @@ curl https://YOUR_DOMAIN.fakturownia.pl/invoices/123.json \
     -X PUT \
     -H 'Accept: application/json' \
     -H 'Content-Type: application/json' \
-    -d '{"api_token": "API_TOKEN",
+    -H 'Authorization: Bearer API_TOKEN' \
+    -d '{
         "invoice": {
             "payment_to_kind": "other_date",
             "payment_to": "2026-06-30"
@@ -2086,7 +2105,7 @@ Pole `payment_to_description` jest zwracane w odpowiedzi na:
 
 
 ```shell
-curl "https://YOUR_DOMAIN.fakturownia.pl/invoices/123.json?api_token=API_TOKEN"
+curl -H 'Authorization: Bearer API_TOKEN' "https://YOUR_DOMAIN.fakturownia.pl/invoices/123.json"
 ```
 
 fragment odpowiedzi:
@@ -2162,31 +2181,31 @@ Nieprawidłowe dane kończą się odpowiedzią `422 Unprocessable Entity`:
 Lista klientów
 
 ```shell
-curl "https://YOUR_DOMAIN.fakturownia.pl/clients.json?api_token=API_TOKEN&page=1"
+curl -H 'Authorization: Bearer API_TOKEN' "https://YOUR_DOMAIN.fakturownia.pl/clients.json?page=1"
 ```
 
 <a name="k1b"></a>
 Wyszukiwanie klientów po nazwie, mailu, nazwie skróconej lub numerze NIP
 
 ```shell
-curl "https://YOUR_DOMAIN.fakturownia.pl/clients.json?api_token=API_TOKEN&name=CLIENT_NAME"
-curl "https://YOUR_DOMAIN.fakturownia.pl/clients.json?api_token=API_TOKEN&email=EMAIL_ADDRESS"
-curl "https://YOUR_DOMAIN.fakturownia.pl/clients.json?api_token=API_TOKEN&shortcut=SHORT_NAME"
-curl "https://YOUR_DOMAIN.fakturownia.pl/clients.json?api_token=API_TOKEN&tax_no=TAX_NO"
+curl -H 'Authorization: Bearer API_TOKEN' "https://YOUR_DOMAIN.fakturownia.pl/clients.json?name=CLIENT_NAME"
+curl -H 'Authorization: Bearer API_TOKEN' "https://YOUR_DOMAIN.fakturownia.pl/clients.json?email=EMAIL_ADDRESS"
+curl -H 'Authorization: Bearer API_TOKEN' "https://YOUR_DOMAIN.fakturownia.pl/clients.json?shortcut=SHORT_NAME"
+curl -H 'Authorization: Bearer API_TOKEN' "https://YOUR_DOMAIN.fakturownia.pl/clients.json?tax_no=TAX_NO"
 ```
 
 <a name="k2"></a>
 Pobranie wybranego klienta po ID
 
 ```shell
-curl "https://YOUR_DOMAIN.fakturownia.pl/clients/100.json?api_token=API_TOKEN"
+curl -H 'Authorization: Bearer API_TOKEN' "https://YOUR_DOMAIN.fakturownia.pl/clients/100.json"
 ```
 
 <a name="k2b"></a>
 Pobranie wybranego klienta po zewnętrznym ID
 
 ```shell
-curl "https://YOUR_DOMAIN.fakturownia.pl/clients.json?external_id=100&api_token=API_TOKEN"
+curl -H 'Authorization: Bearer API_TOKEN' "https://YOUR_DOMAIN.fakturownia.pl/clients.json?external_id=100"
 ```
 
 <a name="k3"></a>
@@ -2196,7 +2215,8 @@ Dodanie klienta
 curl https://YOUR_DOMAIN.fakturownia.pl/clients.json \
     -H 'Accept: application/json' \
     -H 'Content-Type: application/json' \
-    -d '{"api_token": "API_TOKEN",
+    -H 'Authorization: Bearer API_TOKEN' \
+    -d '{
         "client": {
             "name": "Klient1",
             "tax_no": "6272616681",
@@ -2218,7 +2238,8 @@ Tylko parametr "name" jest obowiązkowy. Domyślnie każdy nowy klient ma status
 curl https://YOUR_DOMAIN.fakturownia.pl/clients.json \
     -H 'Accept: application/json' \
     -H 'Content-Type: application/json' \
-    -d '{"api_token": "API_TOKEN",
+    -H 'Authorization: Bearer API_TOKEN' \
+    -d '{
         "client": {
             "last_name": "LAST_NAME",
             "company": false
@@ -2295,7 +2316,8 @@ curl https://YOUR_DOMAIN.fakturownia.pl/clients/111.json \
     -X PUT \
     -H 'Accept: application/json'  \
     -H 'Content-Type: application/json'  \
-    -d '{"api_token": "API_TOKEN",
+    -H 'Authorization: Bearer API_TOKEN' \
+    -d '{
         "client": {
             "name": "Klient2",
             "tax_no": "62726166812",
@@ -2314,7 +2336,7 @@ curl https://YOUR_DOMAIN.fakturownia.pl/clients/111.json \
 Usunięcie klienta
 
 ```shell
-curl -X DELETE "https://YOUR_DOMAIN.fakturownia.pl/clients/CLIENT_ID.json?api_token=API_TOKEN"
+curl -X DELETE -H 'Authorization: Bearer API_TOKEN' "https://YOUR_DOMAIN.fakturownia.pl/clients/CLIENT_ID.json"
 ```
 
 <a name="products"></a>
@@ -2325,13 +2347,13 @@ curl -X DELETE "https://YOUR_DOMAIN.fakturownia.pl/clients/CLIENT_ID.json?api_to
 Lista produktów
 
 ```shell
-curl "https://YOUR_DOMAIN.fakturownia.pl/products.json?api_token=API_TOKEN&page=1"
+curl -H 'Authorization: Bearer API_TOKEN' "https://YOUR_DOMAIN.fakturownia.pl/products.json?page=1"
 ```
 
 Lista dodanych/zmienionych produktów (np. dostępna ilość, nazwa, cena) po wskazanej dacie np. 2025-11-01
 
 ```shell
-curl "https://YOUR_DOMAIN.fakturownia.pl/products.json?api_token=API_TOKEN&date_from=DATA&page=1"
+curl -H 'Authorization: Bearer API_TOKEN' "https://YOUR_DOMAIN.fakturownia.pl/products.json?date_from=DATA&page=1"
 ```
 
 
@@ -2339,21 +2361,21 @@ curl "https://YOUR_DOMAIN.fakturownia.pl/products.json?api_token=API_TOKEN&date_
 Lista produktów ze stanem magazynowym podanego magazynu
 
 ```shell
-curl "https://YOUR_DOMAIN.fakturownia.pl/products.json?api_token=API_TOKEN&warehouse_id=WAREHOUSE_ID&page=1"
+curl -H 'Authorization: Bearer API_TOKEN' "https://YOUR_DOMAIN.fakturownia.pl/products.json?warehouse_id=WAREHOUSE_ID&page=1"
 ```
 
 <a name="p3"></a>
 Pobranie wybranego produktu po ID
 
 ```shell
-curl "https://YOUR_DOMAIN.fakturownia.pl/products/100.json?api_token=API_TOKEN"
+curl -H 'Authorization: Bearer API_TOKEN' "https://YOUR_DOMAIN.fakturownia.pl/products/100.json"
 ```
 
 <a name="p4"></a>
 Pobranie wybranego produktu po ID ze stanem magazynowym podanego magazynu
 
 ```shell
-curl "https://YOUR_DOMAIN.fakturownia.pl/products/100.json?api_token=API_TOKEN&warehouse_id=WAREHOUSE_ID"
+curl -H 'Authorization: Bearer API_TOKEN' "https://YOUR_DOMAIN.fakturownia.pl/products/100.json?warehouse_id=WAREHOUSE_ID"
 ```
 
 <a name="p5"></a>
@@ -2363,7 +2385,8 @@ Dodanie produktu
 curl https://YOUR_DOMAIN.fakturownia.pl/products.json \
     -H 'Accept: application/json'  \
     -H 'Content-Type: application/json'  \
-    -d '{"api_token": "API_TOKEN",
+    -H 'Authorization: Bearer API_TOKEN' \
+    -d '{
         "product": {
             "name": "PoroductAA",
             "code": "A001",
@@ -2379,7 +2402,8 @@ Dodanie produktu, który jest zestawem
 curl https://YOUR_DOMAIN.fakturownia.pl/products.json \
     -H 'Accept: application/json'  \
     -H 'Content-Type: application/json'  \
-    -d '{"api_token": "API_TOKEN",
+    -H 'Authorization: Bearer API_TOKEN' \
+    -d '{
         "product": {
             "name": "zestaw",
             "price_net": "100",
@@ -2452,7 +2476,8 @@ curl https://YOUR_DOMAIN.fakturownia.pl/products/333.json \
     -X PUT \
     -H 'Accept: application/json'  \
     -H 'Content-Type: application/json'  \
-    -d '{"api_token": "API_TOKEN",
+    -H 'Authorization: Bearer API_TOKEN' \
+    -d '{
         "product": {
             "name": "PoroductAA2",
             "code": "A0012",
@@ -2473,7 +2498,7 @@ curl https://YOUR_DOMAIN.fakturownia.pl/products/333.json \
 Lista cenników
 
 ```shell
-curl "https://YOUR_DOMAIN.fakturownia.pl/price_lists.json?api_token=API_TOKEN"
+curl -H 'Authorization: Bearer API_TOKEN' "https://YOUR_DOMAIN.fakturownia.pl/price_lists.json"
 ```
 można przekazywać takie same parametry jakie są przekazywane w aplikacji (na stronie listy faktur)
 
@@ -2484,8 +2509,8 @@ Dodanie cennika
 curl https://YOUR_DOMAIN.fakturownia.pl/price_lists.json
                 -H 'Accept: application/json'
                 -H 'Content-Type: application/json'
+                -H 'Authorization: Bearer API_TOKEN'
                 -d '{
-                "api_token": "API_TOKEN",
                 "price_list": {
                     "name": "Nazwa cennika",
 		    "description": "Opis",
@@ -2514,8 +2539,8 @@ curl https://YOUR_DOMAIN.fakturownia.pl/price_lists/100.json
 		-X PUT
                 -H 'Accept: application/json'
                 -H 'Content-Type: application/json'
+                -H 'Authorization: Bearer API_TOKEN'
                 -d '{
-                "api_token": "API_TOKEN",
                 "price_list": {
                     "name": "Nazwa cennika",
                     "description": "Opis",
@@ -2537,7 +2562,7 @@ curl https://YOUR_DOMAIN.fakturownia.pl/price_lists/100.json
 Usunięcie cennika
 
 ```shell
-curl -X DELETE "https://YOUR_DOMAIN.fakturownia.pl/price_lists/100.json?api_token=API_TOKEN"
+curl -X DELETE -H 'Authorization: Bearer API_TOKEN' "https://YOUR_DOMAIN.fakturownia.pl/price_lists/100.json"
 ```
 
 ## Dokumenty magazynowe
@@ -2546,7 +2571,7 @@ curl -X DELETE "https://YOUR_DOMAIN.fakturownia.pl/price_lists/100.json?api_toke
 Wszystkie dokumenty magazynowe
 
 ```shell
-curl "https://YOUR_DOMAIN.fakturownia.pl/warehouse_documents.json?api_token=API_TOKEN"
+curl -H 'Authorization: Bearer API_TOKEN' "https://YOUR_DOMAIN.fakturownia.pl/warehouse_documents.json"
 ```
 można przekazywać takie same parametry jakie są przekazywane w aplikacji (na stronie listy faktur)
 
@@ -2554,7 +2579,7 @@ można przekazywać takie same parametry jakie są przekazywane w aplikacji (na 
 Pobranie wybranego dokumentu po ID
 
 ```shell
-curl "https://YOUR_DOMAIN.fakturownia.pl/warehouse_documents/555.json?api_token=API_TOKEN"
+curl -H 'Authorization: Bearer API_TOKEN' "https://YOUR_DOMAIN.fakturownia.pl/warehouse_documents/555.json"
 ```
 
 <a name="wd3a"></a>
@@ -2564,8 +2589,8 @@ Dodanie dokumentu magazynowego MM
 curl https://YOUR_DOMAIN.fakturownia.pl/warehouse_documents.json
                 -H 'Accept: application/json'
                 -H 'Content-Type: application/json'
+                -H 'Authorization: Bearer API_TOKEN'
                 -d '{
-                "api_token": "API_TOKEN",
                 "warehouse_document": {
                     "kind":"mm",
                     "number": null,
@@ -2586,8 +2611,8 @@ Dodanie dokumentu magazynowego PZ
 curl https://YOUR_DOMAIN.fakturownia.pl/warehouse_documents.json
 				-H 'Accept: application/json'
 				-H 'Content-Type: application/json'
+				-H 'Authorization: Bearer API_TOKEN'
 				-d '{
-				"api_token": "API_TOKEN",
 				"warehouse_document": {
 					"kind":"pz",
 					"number": null,
@@ -2609,8 +2634,8 @@ Dodanie dokumentu magazynowego WZ
 curl https://YOUR_DOMAIN.fakturownia.pl/warehouse_documents.json
 				-H 'Accept: application/json'
 				-H 'Content-Type: application/json'
+				-H 'Authorization: Bearer API_TOKEN'
 				-d '{
-				"api_token": "API_TOKEN",
 				"warehouse_document": {
 					"kind":"wz",
 					"number": null,
@@ -2632,8 +2657,8 @@ Dodanie dokumentu magazynowego PZ dla istniejącego klienta, działu i produktu
 curl https://YOUR_DOMAIN.fakturownia.pl/warehouse_documents.json
 				-H 'Accept: application/json'
 				-H 'Content-Type: application/json'
+				-H 'Authorization: Bearer API_TOKEN'
 				-d '{
-				"api_token": "API_TOKEN",
 				"warehouse_document": {
 					"kind":"pz",
 					"number": null,
@@ -2656,7 +2681,8 @@ curl https://YOUR_DOMAIN.fakturownia.pl/warehouse_documents/555.json
 			 	-X PUT
 				-H 'Accept: application/json'
 				-H 'Content-Type: application/json'
-				-d '{"api_token": "API_TOKEN",
+				-H 'Authorization: Bearer API_TOKEN'
+				-d '{
 					"warehouse_document": {
 						"client_name": "New client name SA"
 				    }}'
@@ -2666,7 +2692,7 @@ curl https://YOUR_DOMAIN.fakturownia.pl/warehouse_documents/555.json
 Usunięcie dokumentu
 
 ```shell
-curl -X DELETE "https://YOUR_DOMAIN.fakturownia.pl/warehouse_documents/100.json?api_token=API_TOKEN"
+curl -X DELETE -H 'Authorization: Bearer API_TOKEN' "https://YOUR_DOMAIN.fakturownia.pl/warehouse_documents/100.json"
 ```
 
 <a name="wd8"></a>
@@ -2677,7 +2703,8 @@ curl https://YOUR_DOMAIN.fakturownia.pl/warehouse_documents/555.json
 				-X PUT
 				-H 'Accept: application/json'
 				-H 'Content-Type: application/json'
-				-d '{"api_token": "API_TOKEN",
+				-H 'Authorization: Bearer API_TOKEN'
+				-d '{
 					"warehouse_document": {
 						"invoice_ids": [
 							100,
@@ -2694,7 +2721,7 @@ curl https://YOUR_DOMAIN.fakturownia.pl/warehouse_documents/555.json
 Wszystkie płatności
 
 ```shell
-curl "https://YOUR_DOMAIN.fakturownia.pl/banking/payments.json?api_token=API_TOKEN"
+curl -H 'Authorization: Bearer API_TOKEN' "https://YOUR_DOMAIN.fakturownia.pl/banking/payments.json"
 ```
 
 można przekazywać takie same parametry jakie są przekazywane w aplikacji (na stronie listy płatności)
@@ -2704,7 +2731,7 @@ można przekazywać takie same parametry jakie są przekazywane w aplikacji (na 
 Pobranie wybranej płatności po ID
 
 ```shell
-curl "https://YOUR_DOMAIN.fakturownia.pl/banking/payment/100.json?api_token=API_TOKEN"
+curl -H 'Authorization: Bearer API_TOKEN' "https://YOUR_DOMAIN.fakturownia.pl/banking/payment/100.json"
 ```
 
 <a name="pl3"></a>
@@ -2714,8 +2741,8 @@ Dodawanie nowej płatności
 curl https://YOUR_DOMAIN.fakturownia.pl/banking/payments.json \
 				-H 'Accept: application/json' \
 				-H 'Content-Type: application/json' \
+				-H 'Authorization: Bearer API_TOKEN' \
 				-d '{
-					"api_token": "API_TOKEN",
 					"banking_payment": {
 						"name":"Payment 001",
 						"price": 100.05,
@@ -2729,7 +2756,7 @@ curl https://YOUR_DOMAIN.fakturownia.pl/banking/payments.json \
 Pobranie płatności wraz z danymi przypiętych faktur
 
 ```shell
-curl "https://YOUR_DOMAIN.fakturownia.pl/banking/payments.json?include=invoices&api_token=API_TOKEN"
+curl -H 'Authorization: Bearer API_TOKEN' "https://YOUR_DOMAIN.fakturownia.pl/banking/payments.json?include=invoices"
 ```
 <a name="pl5"></a>
 Dodanie nowej płatności powiązanej z istniejącymi fakturami
@@ -2738,8 +2765,8 @@ Dodanie nowej płatności powiązanej z istniejącymi fakturami
 curl https://YOUR_DOMAIN.fakturownia.pl/banking/payments.json \
 				-H 'Accept: application/json' \
 				-H 'Content-Type: application/json' \
+				-H 'Authorization: Bearer API_TOKEN' \
 				-d '{
-					"api_token": "API_TOKEN",
 					"banking_payment": {
 						"name":"Payment 003",
 						"price": 200,
@@ -2759,7 +2786,8 @@ curl https://YOUR_DOMAIN.fakturownia.pl/banking/payments/555.json
 				-X PATCH
 				-H 'Accept: application/json'
 				-H 'Content-Type: application/json'
-				-d '{"api_token": "API_TOKEN",
+				-H 'Authorization: Bearer API_TOKEN'
+				-d '{
 					"banking_payment": {
 						"name": "New payment name",
 						"price": 100
@@ -2770,7 +2798,7 @@ curl https://YOUR_DOMAIN.fakturownia.pl/banking/payments/555.json
 Usuwanie płatności
 
 ```shell
-curl -X DELETE "https://YOUR_DOMAIN.fakturownia.pl/banking/payments/555.json?api_token=API_TOKEN"
+curl -X DELETE -H 'Authorization: Bearer API_TOKEN' "https://YOUR_DOMAIN.fakturownia.pl/banking/payments/555.json"
 ```
 
 <a name="categories"></a>
@@ -2781,14 +2809,14 @@ curl -X DELETE "https://YOUR_DOMAIN.fakturownia.pl/banking/payments/555.json?api
 Lista wszystkich kategorii
 
 ```shell
-curl "https://YOUR_DOMAIN.fakturownia.pl/categories.json?api_token=API_TOKEN"
+curl -H 'Authorization: Bearer API_TOKEN' "https://YOUR_DOMAIN.fakturownia.pl/categories.json"
 ```
 
 <a name="cat2"></a>
 Pobranie pojedycznej kategorii po ID
 
 ```shell
-curl "https://YOUR_DOMAIN.fakturownia.pl/categories/100.json?api_token=API_TOKEN"
+curl -H 'Authorization: Bearer API_TOKEN' "https://YOUR_DOMAIN.fakturownia.pl/categories/100.json"
 ```
 
 <a name="cat3"></a>
@@ -2798,8 +2826,8 @@ Dodanie nowej kategorii
 curl https://YOUR_DOMAIN.fakturownia.pl/categories.json
 				-H 'Accept: application/json'
 				-H 'Content-Type: application/json'
+				-H 'Authorization: Bearer API_TOKEN'
 				-d '{
-				"api_token": "API_TOKEN",
 				"category": {
 					"name":"my_category",
 					"description": null
@@ -2814,8 +2842,8 @@ curl https://YOUR_DOMAIN.fakturownia.pl/categories/100.json
 				-X PUT
 				-H 'Accept: application/json'
 				-H 'Content-Type: application/json'
+				-H 'Authorization: Bearer API_TOKEN'
 				-d '{
-				"api_token": "API_TOKEN",
 				"category": {
 					"name":"my_category",
 					"description": "new_description"
@@ -2827,7 +2855,7 @@ curl https://YOUR_DOMAIN.fakturownia.pl/categories/100.json
 Usunięcie kategorii o podanym ID
 
 ```shell
-curl -X DELETE "https://YOUR_DOMAIN.fakturownia.pl/categories/100.json?api_token=API_TOKEN"
+curl -X DELETE -H 'Authorization: Bearer API_TOKEN' "https://YOUR_DOMAIN.fakturownia.pl/categories/100.json"
 ```
 
 <a name="warehouses"></a>
@@ -2838,14 +2866,14 @@ curl -X DELETE "https://YOUR_DOMAIN.fakturownia.pl/categories/100.json?api_token
 Lista wszystkich magazynów
 
 ```shell
-curl "https://YOUR_DOMAIN.fakturownia.pl/warehouses.json?api_token=API_TOKEN"
+curl -H 'Authorization: Bearer API_TOKEN' "https://YOUR_DOMAIN.fakturownia.pl/warehouses.json"
 ```
 
 <a name="wh2"></a>
 Pobranie pojedycznego magazynu po ID
 
 ```shell
-curl "https://YOUR_DOMAIN.fakturownia.pl/warehouses/100.json?api_token=API_TOKEN"
+curl -H 'Authorization: Bearer API_TOKEN' "https://YOUR_DOMAIN.fakturownia.pl/warehouses/100.json"
 ```
 
 <a name="wh3"></a>
@@ -2855,8 +2883,8 @@ Dodanie nowego magazynu
 curl https://YOUR_DOMAIN.fakturownia.pl/warehouses.json
 				-H 'Accept: application/json'
 				-H 'Content-Type: application/json'
+				-H 'Authorization: Bearer API_TOKEN'
 				-d '{
-				"api_token": "API_TOKEN",
 				"warehouse": {
 					"name":"my_warehouse",
 					"kind": null,
@@ -2872,8 +2900,8 @@ curl https://YOUR_DOMAIN.fakturownia.pl/warehouses/100.json
 				-X PUT
 				-H 'Accept: application/json'
 				-H 'Content-Type: application/json'
+				-H 'Authorization: Bearer API_TOKEN'
 				-d '{
-				"api_token": "API_TOKEN",
 				"warehouse": {
 					"name":"my_category",
 					"kind": null,
@@ -2886,7 +2914,7 @@ curl https://YOUR_DOMAIN.fakturownia.pl/warehouses/100.json
 Usunięcie magazynu o podanym ID
 
 ```shell
-curl -X DELETE "https://YOUR_DOMAIN.fakturownia.pl/warehouses/100.json?api_token=API_TOKEN"
+curl -X DELETE -H 'Authorization: Bearer API_TOKEN' "https://YOUR_DOMAIN.fakturownia.pl/warehouses/100.json"
 ```
 
 <a name="warehouse_actions"></a>
@@ -2897,7 +2925,7 @@ curl -X DELETE "https://YOUR_DOMAIN.fakturownia.pl/warehouses/100.json?api_token
 Lista wszystkich akcji magazynowych
 
 ```shell
-curl "https://YOUR_DOMAIN.fakturownia.pl/warehouse_actions.json?api_token=API_TOKEN"
+curl -H 'Authorization: Bearer API_TOKEN' "https://YOUR_DOMAIN.fakturownia.pl/warehouse_actions.json"
 ```
 
 Do wywołań można przekazywać dodatkowe parametry - takie same, które są używane w aplikacji, np. `page=`, `per_page=` itp.
@@ -2926,14 +2954,14 @@ Parametr `warehouse_document_id=` wszystkie akcje magazynowego dla wybranego dok
 Lista wszystkich działów
 
 ```shell
-curl "https://YOUR_DOMAIN.fakturownia.pl/departments.json?api_token=API_TOKEN"
+curl -H 'Authorization: Bearer API_TOKEN' "https://YOUR_DOMAIN.fakturownia.pl/departments.json"
 ```
 
 <a name="dep2"></a>
 Pobranie pojedycznego działu po ID
 
 ```shell
-curl "https://YOUR_DOMAIN.fakturownia.pl/departments/100.json?api_token=API_TOKEN"
+curl -H 'Authorization: Bearer API_TOKEN' "https://YOUR_DOMAIN.fakturownia.pl/departments/100.json"
 ```
 
 <a name="dep3"></a>
@@ -2943,8 +2971,8 @@ Dodanie nowego działu
 curl https://YOUR_DOMAIN.fakturownia.pl/departments.json
 				-H 'Accept: application/json'
 				-H 'Content-Type: application/json'
+				-H 'Authorization: Bearer API_TOKEN'
 				-d '{
-				"api_token": "API_TOKEN",
 				"department": {
 					"name":"my_warehouse",
 					"shortcut": "short_name",
@@ -2960,8 +2988,8 @@ curl https://YOUR_DOMAIN.fakturownia.pl/departments/100.json
         -X PUT
         -H 'Accept: application/json'
         -H 'Content-Type: application/json'
+        -H 'Authorization: Bearer API_TOKEN'
         -d '{
-        "api_token": "API_TOKEN",
         "department": {
           "name":"new_name",
           "shortcut": "new_short_name",
@@ -2973,7 +3001,7 @@ curl https://YOUR_DOMAIN.fakturownia.pl/departments/100.json
 Usunięcie działu o podanym ID
 
 ```shell
-curl -X DELETE "https://YOUR_DOMAIN.fakturownia.pl/departments/100.json?api_token=API_TOKEN"
+curl -X DELETE -H 'Authorization: Bearer API_TOKEN' "https://YOUR_DOMAIN.fakturownia.pl/departments/100.json"
 ```
 
 <a name="dep6"></a>
@@ -2981,7 +3009,7 @@ Dodanie logo
 
 ```shell
 curl -X PUT  https://YOUR_DOMAIN.fakturownia.pl/departments/DEPARTMENT_ID.json \
-    -F 'api_token=API_TOKEN' \
+    -H 'Authorization: Bearer API_TOKEN' \
     -F 'department[logo]=@/file_path/logo.png'
 ```
 <a name="issuers"></a>
@@ -2992,14 +3020,14 @@ curl -X PUT  https://YOUR_DOMAIN.fakturownia.pl/departments/DEPARTMENT_ID.json \
 Lista wszystkich wystawców
 
 ```shell
-curl "https://YOUR_DOMAIN.fakturownia.pl/issuers.json?api_token=API_TOKEN"
+curl -H 'Authorization: Bearer API_TOKEN' "https://YOUR_DOMAIN.fakturownia.pl/issuers.json"
 ```
 
 <a name="issuers2"></a>
 Pobranie wystawcy po ID
 
 ```shell
-curl "https://YOUR_DOMAIN.fakturownia.pl/issuers/1.json?api_token=API_TOKEN"
+curl -H 'Authorization: Bearer API_TOKEN' "https://YOUR_DOMAIN.fakturownia.pl/issuers/1.json"
 ```
 
 <a name="issuers3"></a>
@@ -3009,8 +3037,8 @@ Dodanie nowego wystawcy
 curl https://YOUR_DOMAIN.fakturownia.pl/issuers.json
 				-H 'Accept: application/json'
 				-H 'Content-Type: application/json'
+				-H 'Authorization: Bearer API_TOKEN'
 				-d '{
-				"api_token": "API_TOKEN",
 				"issuer": {
 					"name":"Issuer",
 					"tax_no": "4170106662"
@@ -3025,8 +3053,8 @@ curl https://YOUR_DOMAIN.fakturownia.pl/issuers/1.json
         -X PUT
         -H 'Accept: application/json'
         -H 'Content-Type: application/json'
+        -H 'Authorization: Bearer API_TOKEN'
         -d '{
-        "api_token": "API_TOKEN",
         "issuer": {
           "name":"new_name",
         }}'
@@ -3036,7 +3064,7 @@ curl https://YOUR_DOMAIN.fakturownia.pl/issuers/1.json
 Usunięcie wystawcy po ID
 
 ```shell
-curl -X DELETE "https://YOUR_DOMAIN.fakturownia.pl/issuers/1.json?api_token=API_TOKEN"
+curl -X DELETE -H 'Authorization: Bearer API_TOKEN' "https://YOUR_DOMAIN.fakturownia.pl/issuers/1.json"
 ```
 
 <a name="get_token_by_api"></a>
@@ -3077,7 +3105,7 @@ UWAGA: api_token jest zwracany tylko jeśli dany użytkownik ma wygenerowany API
 
 Po utworzeniu konta API i określeniu właściciela (patrz wyżej), możesz dodać innych użytkowników do konta poprzez API i zdefiniować ich rolę.<br>
 Aby dodać użytkownika do konta, musisz wysłać:
-   - kod API Twojego konta (```api_token```)
+   - kod API Twojego konta (w nagłówku ```Authorization: Bearer API_TOKEN```)
    - Twój kod do umieszczenia na stronie (```integration_token```). Aby go otrzymać skontaktuj się z nami poprzez wiadomość e-mail info@fakturownia.pl.
    - określenia parametru ```invite``` :
 	  - jeśli użytkownik musi zostać stworzony ("false"): oprócz przesłania adresu e-mail należy także wybrać hasło
@@ -3092,8 +3120,8 @@ Aby dowiedzieć się więcej o rolach użytkowników zapraszamy do bazy wiedzy: 
 ```shell
 POST https://YOUR_DOMAIN.fakturownia.pl/account/add_user.json
 Content-Type: application/json
+Authorization: Bearer API_TOKEN
 {
-  "api_token": "API_TOKEN",
   "integration_token": "INTEGRATION_TOKEN",
   "user": {
     "invite": true,
@@ -3125,8 +3153,8 @@ Pola: user.login, user.from_partner, user, company nie są wymagane
 curl https://YOUR_DOMAIN.fakturownia.pl/account.json \
     -H 'Accept: application/json' \
     -H 'Content-Type: application/json' \
+    -H 'Authorization: Bearer API_TOKEN' \
     -d '{
-            "api_token": "API_TOKEN",
             "account": {
                 "prefix": "prefix1",
 		"lang": "pl"
@@ -3184,7 +3212,7 @@ Inne pola dostępne przy tworzeniu nowego konta (pomocne przy integracji)
 ### Pobranie informacji o koncie:
 
 ```shell
-curl "https://YOUR_DOMAIN.fakturownia.pl/account.json?api_token=API_TOKEN&integration_token="
+curl -H 'Authorization: Bearer API_TOKEN' "https://YOUR_DOMAIN.fakturownia.pl/account.json?integration_token="
 ```
 
 <a name="a3"></a>
@@ -3198,9 +3226,8 @@ curl https://YOUR_DOMAIN.fakturownia.pl/account/delete.json \
     -X POST \
     -H 'Accept:application/json' \
     -H 'Content-Type: application/json' \
-    -d '{
-        "api_token": "API_TOKEN"
-    }'
+    -H 'Authorization: Bearer API_TOKEN' \
+    -d '{}'
 ```
 
 przykład odpowiedzi:
@@ -3224,8 +3251,8 @@ curl https://YOUR_DOMAIN.fakturownia.pl/account/unlink.json \
     -X PATCH \
     -H 'Accept: application/json' \
     -H 'Content-Type: application/json' \
+    -H 'Authorization: Bearer API_TOKEN' \
     -d '{
-        "api_token": "API_TOKEN",
         "prefix": "SUB_DOMAIN_1"
     }'
 ```
@@ -3237,8 +3264,8 @@ curl https://YOUR_DOMAIN.fakturownia.pl/account/unlink.json \
     -X PATCH \
     -H 'Accept: application/json' \
     -H 'Content-Type: application/json' \
+    -H 'Authorization: Bearer API_TOKEN' \
     -d '{
-        "api_token": "API_TOKEN",
         "prefix": ["SUB_DOMAIN_1", "SUB_DOMAIN_2", "SUB_DOMAIN_3"]
     }'
 ```
@@ -3300,7 +3327,7 @@ Ruby Gem do integracji z Fakturownia.pl: <https://github.com/kkempin/fakturownia
 Przykład:
 
 ```shell
-curl "https://YOUR_DOMAIN.fakturownia.pl/webhooks.json?api_token=API_TOKEN"
+curl -H 'Authorization: Bearer API_TOKEN' "https://YOUR_DOMAIN.fakturownia.pl/webhooks.json"
 ```
 
 <a name="eparagony"></a>
