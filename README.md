@@ -142,7 +142,7 @@ Token przekazujemy w nagłówku HTTP `Authorization`:
 Authorization: Bearer API_TOKEN
 ```
 
-Przekazanie tokena jako parametru `api_token` w adresie URL lub w treści żądania jest nadal obsługiwane, ale niezalecane - adres URL z tokenem trafia do logów serwerów i proxy oraz do historii przeglądarki.
+Przekazanie tokena jako parametru `api_token` w adresie URL lub w treści żądania jest nadal obsługiwane, ale niezalecane - adres URL z tokenem trafia do logów serwerów i proxy oraz do historii przeglądarki. Odpowiedź na wywołanie z tokenem w adresie URL zawiera nagłówek `Deprecation`.
 
 <a name="list_params"></a>
 
