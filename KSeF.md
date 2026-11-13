@@ -31,8 +31,8 @@ Minimalny przykład utworzenia faktury i wysłania do KSeF:
 ```bash
 curl -X POST "https://app.fakturownia.pl/invoices.json" \
   -H "Content-Type: application/json" \
+  -H "Authorization: Bearer TWOJ_TOKEN" \
   -d '{
-    "api_token": "TWOJ_TOKEN",
     "gov_save_and_send": true,
     "invoice": {
       "kind": "vat",
@@ -410,12 +410,12 @@ Możesz wysłać istniejącą fakturę do KSeF na dwa sposoby:
 
 **Sposób 1: Parametr `send_to_ksef`**
 ```
-GET /invoices/{ID}.json?send_to_ksef=yes&api_token=TWOJ_TOKEN
+GET /invoices/{ID}.json?send_to_ksef=yes
 ```
 
 **Sposób 2: Parametr `gov_save_and_send` przy tworzeniu/edycji**
 ```json
-POST /invoices.json?gov_save_and_send=1&api_token=TWOJ_TOKEN
+POST /invoices.json?gov_save_and_send=1
 
 {
   "invoice": { ... }
@@ -503,7 +503,7 @@ Gdy faktura jest wystawiana w trybie OFFLINE:
 Pobierając fakturę przez API, otrzymujesz pola związane z KSeF:
 
 ```
-GET /invoices/{ID}.json?fields[invoice]=gov_status,gov_id,gov_send_date,gov_sell_date,gov_error_messages,gov_verification_link,gov_link,gov_corrected_invoice_number&api_token=TWOJ_TOKEN
+GET /invoices/{ID}.json?fields[invoice]=gov_status,gov_id,gov_send_date,gov_sell_date,gov_error_messages,gov_verification_link,gov_link,gov_corrected_invoice_number
 ```
 
 Przykładowa odpowiedź dla faktury wysłanej do KSeF:
@@ -610,7 +610,7 @@ W przypadku interaktywnej wysyłki faktur do KSeF załączniki będą dostępne 
 Pobierz XML faktury w formacie KSeF:
 
 ```
-GET /invoices/{ID}/attachment?kind=gov&api_token=TWOJ_TOKEN
+GET /invoices/{ID}/attachment?kind=gov
 ```
 
 Zwraca plik XML zgodny ze schematem KSeF (Content-Type: text/xml).
@@ -620,7 +620,7 @@ Zwraca plik XML zgodny ze schematem KSeF (Content-Type: text/xml).
 Pobierz XML potwierdzenia:
 
 ```
-GET /invoices/{ID}/attachment?kind=gov_upo&api_token=TWOJ_TOKEN
+GET /invoices/{ID}/attachment?kind=gov_upo
 ```
 
 ---
@@ -633,7 +633,6 @@ KSeF pozwala na wskazanie dodatkowego wystawcy faktury (np. biura rachunkowego).
 
 ```json
 {
-  "api_token": "TWOJ_TOKEN",
   "invoice": {
     "seller_name": "Moja Firma Sp. z o.o.",
     "seller_tax_no": "5252445767",
@@ -674,7 +673,6 @@ KSeF pozwala na wskazanie dodatkowych odbiorców faktury (np. współwłaścicie
 
 ```json
 {
-  "api_token": "TWOJ_TOKEN",
   "invoice": {
     "buyer_name": "Firma ABC Sp. z o.o.",
     "buyer_tax_no": "9876543210",
@@ -935,8 +933,8 @@ Użyj tej listy do sprawdzenia gotowości Twojej integracji:
 ```bash
 curl -X POST "https://app.fakturownia.pl/invoices.json" \
   -H "Content-Type: application/json" \
+  -H "Authorization: Bearer TWOJ_TOKEN" \
   -d '{
-    "api_token": "TWOJ_TOKEN",
     "invoice": {
       "kind": "vat",
       "issue_date": "2026-02-01",
@@ -980,8 +978,8 @@ Podaj parametr `gov_save_and_send` w URL lub w body.
 ```bash
 curl -X POST "https://app.fakturownia.pl/invoices.json" \
   -H "Content-Type: application/json" \
+  -H "Authorization: Bearer TWOJ_TOKEN" \
   -d '{
-    "api_token": "TWOJ_TOKEN",
     "gov_save_and_send": true,
     "invoice": {
       "kind": "vat",
@@ -995,13 +993,13 @@ curl -X POST "https://app.fakturownia.pl/invoices.json" \
 Podaj parametr `send_to_ksef` w URL lub w body.
 
 ```bash
-curl -X GET "https://app.fakturownia.pl/invoices/12345.json?send_to_ksef=yes&api_token=TWOJ_TOKEN"
+curl -X GET -H "Authorization: Bearer TWOJ_TOKEN" "https://app.fakturownia.pl/invoices/12345.json?send_to_ksef=yes"
 ```
 
 ### Sprawdzenie statusu faktury
 
 ```bash
-curl -X GET "https://app.fakturownia.pl/invoices/12345.json?api_token=TWOJ_TOKEN&fields[invoice]=id,number,gov_status,gov_id,gov_send_date,gov_sell_date,gov_error_messages,gov_verification_link,gov_link,gov_corrected_invoice_number"
+curl -X GET -H "Authorization: Bearer TWOJ_TOKEN" "https://app.fakturownia.pl/invoices/12345.json?fields[invoice]=id,number,gov_status,gov_id,gov_send_date,gov_sell_date,gov_error_messages,gov_verification_link,gov_link,gov_corrected_invoice_number"
 ```
 
 Odpowiedź (fragment):
@@ -1024,12 +1022,12 @@ Odpowiedź (fragment):
 
 XML faktury zgodny ze schematem KSeF (Content-Type: text/xml):
 ```
-GET /invoices/{ID}/attachment?kind=gov&api_token=TWOJ_TOKEN
+GET /invoices/{ID}/attachment?kind=gov
 ```
 
 XML UPO (Urzędowe Potwierdzenie Odbioru):
 ```
-GET /invoices/{ID}/attachment?kind=gov_upo&api_token=TWOJ_TOKEN
+GET /invoices/{ID}/attachment?kind=gov_upo
 ```
 
 Możliwe odpowiedzi:
@@ -1043,8 +1041,8 @@ Przykład faktury zawierającej wszystkie opcjonalne elementy KSeF: wystawcę (i
 ```bash
 curl -X POST "https://app.fakturownia.pl/invoices.json" \
   -H "Content-Type: application/json" \
+  -H "Authorization: Bearer TWOJ_TOKEN" \
   -d '{
-    "api_token": "TWOJ_TOKEN",
     "invoice": {
       "kind": "vat",
       "seller_name": "Klinika Medyczna Sp. z o.o.",
@@ -1114,7 +1112,7 @@ curl -X POST "https://app.fakturownia.pl/invoices.json" \
 
 Sprawdź pole `gov_error_messages` w odpowiedzi API:
 ```bash
-curl "https://app.fakturownia.pl/invoices/12345.json?fields[invoice]=gov_error_messages&api_token=TWOJ_TOKEN"
+curl -H "Authorization: Bearer TWOJ_TOKEN" "https://app.fakturownia.pl/invoices/12345.json?fields[invoice]=gov_error_messages"
 ```
 Jeśli pole jest puste (`null` lub `[]`), faktura jest poprawna.
 
