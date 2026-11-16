@@ -31,7 +31,7 @@ Każda faktura może mieć przypisany jeden lub wiele **rachunków bankowych spr
 ### Żądanie
 
 ```http
-GET /invoices/{id}.json?api_token=API_TOKEN
+GET /invoices/{id}.json
 ```
 
 Pole `bank_accounts` jest zwracane automatycznie w odpowiedzi.
@@ -39,7 +39,7 @@ Pole `bank_accounts` jest zwracane automatycznie w odpowiedzi.
 ### Przykład
 
 ```bash
-curl "https://twojaDomena.fakturownia.pl/invoices/462474440.json?api_token=API_TOKEN"
+curl -H "Authorization: Bearer API_TOKEN" "https://twojaDomena.fakturownia.pl/invoices/462474440.json"
 ```
 
 ### Odpowiedź (200 OK)
@@ -105,8 +105,8 @@ Jeśli mamy włączone zabezpieczone zmiany numeru konta bankowego to podane kon
 ```bash
 curl -X POST "https://twojaDomena.fakturownia.pl/invoices.json" \
   -H "Content-Type: application/json" \
+  -H "Authorization: Bearer API_TOKEN" \
   -d '{
-    "api_token": "API_TOKEN",
     "invoice": {
       "kind": "vat",
       "buyer_name": "Klient Sp. z o.o.",
@@ -229,8 +229,8 @@ POST /bank_accounts.json
 ```bash
 curl -X POST "https://twojaDomena.fakturownia.pl/bank_accounts.json" \
   -H "Content-Type: application/json" \
+  -H "Authorization: Bearer API_TOKEN" \
   -d '{
-    "api_token": "API_TOKEN",
     "bank_account": {
       "name": "Rachunek główny PLN",
       "bank_account_number": "PL61 1090 1014 0000 0712 1981 2874",
@@ -315,13 +315,13 @@ Aby rachunek automatycznie pojawiał się na fakturach z danego działu, dodaj `
 ### Pobieranie pojedynczego rachunku
 
 ```http
-GET /bank_accounts/{id}.json?api_token=API_TOKEN
+GET /bank_accounts/{id}.json
 ```
 
 ### Przykład żądania
 
 ```bash
-curl "https://twojaDomena.fakturownia.pl/bank_accounts/1.json?api_token=API_TOKEN"
+curl -H "Authorization: Bearer API_TOKEN" "https://twojaDomena.fakturownia.pl/bank_accounts/1.json"
 ```
 
 ### Odpowiedź (200 OK)
@@ -364,8 +364,8 @@ PUT /bank_accounts/{id}.json
 ```bash
 curl -X PUT "https://twojaDomena.fakturownia.pl/bank_accounts/1.json" \
   -H "Content-Type: application/json" \
+  -H "Authorization: Bearer API_TOKEN" \
   -d '{
-    "api_token": "API_TOKEN",
     "bank_account": {
       "name": "Zaktualizowany rachunek",
       "bank_account_number": "PL61 1090 1014 0000 0712 1981 2874",
@@ -408,7 +408,7 @@ DELETE /bank_accounts/{id}.json
 ### Przykład żądania
 
 ```bash
-curl -X DELETE "https://twojaDomena.fakturownia.pl/bank_accounts/1.json?api_token=API_TOKEN"
+curl -X DELETE -H "Authorization: Bearer API_TOKEN" "https://twojaDomena.fakturownia.pl/bank_accounts/1.json"
 ```
 
 ### Odpowiedź (200 OK)
@@ -420,13 +420,13 @@ Pusty body z kodem HTTP 200.
 ### Lista rachunków
 
 ```http
-GET /bank_accounts.json?api_token=API_TOKEN
+GET /bank_accounts.json
 ```
 
 ### Przykład żądania
 
 ```bash
-curl "https://twojaDomena.fakturownia.pl/bank_accounts.json?api_token=API_TOKEN"
+curl -H "Authorization: Bearer API_TOKEN" "https://twojaDomena.fakturownia.pl/bank_accounts.json"
 ```
 
 ### Odpowiedź (200 OK)
@@ -475,8 +475,8 @@ POST /invoices.json
 ```bash
 curl -X POST "https://twojaDomena.fakturownia.pl/invoices.json" \
   -H "Content-Type: application/json" \
+  -H "Authorization: Bearer API_TOKEN" \
   -d '{
-    "api_token": "API_TOKEN",
     "invoice": {
       "copy_invoice_from": 12345
     }
@@ -503,8 +503,8 @@ Aby przypisać **konkretny rachunek** do nowej faktury, użyj parametru `bank_ac
 ```bash
 curl -X POST "https://twojaDomena.fakturownia.pl/invoices.json" \
   -H "Content-Type: application/json" \
+  -H "Authorization: Bearer API_TOKEN" \
   -d '{
-    "api_token": "API_TOKEN",
     "invoice": {
       "kind": "vat",
       "buyer_name": "Klient Sp. z o.o.",
@@ -556,8 +556,8 @@ Mass payment ma **priorytet** nad domyślnymi rachunkami z działu. Gdy warunki 
 ```bash
 curl -X POST "https://twojaDomena.fakturownia.pl/invoices.json" \
   -H "Content-Type: application/json" \
+  -H "Authorization: Bearer API_TOKEN" \
   -d '{
-    "api_token": "API_TOKEN",
     "invoice": {
       "kind": "vat",
       "buyer_name": "Klient z MPC",
@@ -579,8 +579,8 @@ API pozwala na przekazanie kodu mass_payment klienta przy tworzeniu faktury z fl
 ```bash
 curl -X POST "https://twojaDomena.fakturownia.pl/invoices.json" \
   -H "Content-Type: application/json" \
+  -H "Authorization: Bearer API_TOKEN" \
   -d '{
-    "api_token": "API_TOKEN",
     "invoice": {
       "kind": "vat",
       "buyer_name": "Klient Sp. z o.o.",
